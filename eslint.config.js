@@ -39,13 +39,18 @@ export default defineConfig([
       },
     },
     rules: {
+      // React rules
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
+
+      // Warning rules
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true, allowExportNames: ['render'] },
       ],
+
+      // Error rules
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
@@ -53,6 +58,19 @@ export default defineConfig([
       '@typescript-eslint/consistent-type-imports': [
         'error',
         { prefer: 'type-imports' },
+      ],
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+      'padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: '*', next: 'return' },
+        { blankLine: 'always', prev: '*', next: 'if' },
+      ],
+      'prefer-const': [
+        'error',
+        {
+          destructuring: 'any',
+          ignoreReadBeforeAssign: false,
+        },
       ],
     },
   },
