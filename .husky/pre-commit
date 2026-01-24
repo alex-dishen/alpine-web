@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# Run lint-staged (Prettier + ESLint on staged files)
+npx lint-staged
+
+# TypeScript type check
+npm run tsc
+
+# Run tests on changed files
+npx vitest run --changed
+
+# Check for circular dependencies
+npm run check:circular
