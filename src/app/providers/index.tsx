@@ -1,15 +1,15 @@
 import type { ReactNode } from 'react';
-import { QueryProvider } from './query-provider';
-import { ThemeProvider } from '@configs/theme/theme-provider';
+import { QueryProvider } from '@/app/providers/query-provider';
+import { ThemeProvider } from '@/app/providers/theme-provider';
 
-interface AppProvidersProps {
+type AppProvidersProps = {
   children: ReactNode;
-}
+};
 
-export function AppProviders({ children }: AppProvidersProps) {
+export const AppProviders = ({ children }: AppProvidersProps) => {
   return (
     <QueryProvider>
       <ThemeProvider>{children}</ThemeProvider>
     </QueryProvider>
   );
-}
+};

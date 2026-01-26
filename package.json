@@ -16,7 +16,7 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "check:circular": "madge --circular --ts-config ./tsconfig.json --extensions ts,tsx src/",
-    "generate:api": "openapi-typescript ./openapi.yaml -o ./src/configs/api/types/api.generated.ts",
+    "generate:api": "openapi-typescript http://localhost:3001/api-json -o ./src/configs/api/types/api.generated.ts",
     "prepare": "husky"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-progress": "^1.1.8",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",

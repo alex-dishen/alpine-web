@@ -8,195 +8,302 @@ alpine-web/
 ├── docs/                # Documentation
 ├── src/
 │   ├── app/             # Application shell
-│   │   ├── providers/   # React context providers composition
+│   │   ├── providers/   # React context providers
 │   │   └── routes/      # TanStack Router file-based routes
 │   ├── pages/           # Page components (one per route)
-│   ├── features/        # Feature modules (domain-specific business logic)
-│   ├── components/      # Shared UI components
-│   │   ├── ui/          # shadcn/ui primitives
-│   │   ├── layout/      # Layout components (sidebar, header, etc.)
-│   │   └── common/      # Common reusable components
-│   ├── shared/          # Shared utilities (pure functions, no side effects)
-│   │   ├── hooks/       # Shared custom hooks (including shadcn hooks)
-│   │   ├── lib/         # Utility functions (including shadcn utils)
-│   │   ├── types/       # Shared TypeScript types
-│   │   ├── constants/   # Application constants
-│   │   └── schemas/     # Zod validation schemas
-│   ├── configs/         # Application-level infrastructure configurations
-│   │   ├── api/         # API client, query client, generated types
-│   │   └── theme/       # Theme store and provider
+│   │   └── [page-name]/
+│   │       ├── features/    # Page-specific UI components
+│   │       ├── registry/    # Constants and types
+│   │       ├── model/       # Hooks with business logic
+│   │       └── [page].page.tsx
+│   ├── features/        # Shared feature modules
+│   │   └── [feature-name]/
+│   │       ├── ui/          # Feature UI components
+│   │       ├── registry/    # Constants and types
+│   │       ├── model/       # Hooks with business logic
+│   │       └── [feature].tsx
+│   ├── shared/          # Shared utilities
+│   │   ├── shadcn/      # shadcn/ui components and utilities
+│   │   │   ├── components/
+│   │   │   ├── hooks/
+│   │   │   └── utils/
+│   │   ├── assets/      # SVG icons, images
+│   │   └── enums/       # Shared enums
+│   ├── configs/         # Application-level configurations
+│   │   ├── api/         # API client and generated types
+│   │   ├── auth/        # Session management
+│   │   ├── query-client/# TanStack Query client
+│   │   └── zustand/     # Zustand stores
+│   │       ├── auth/    # Auth store
+│   │       └── theme/   # Theme store
 │   └── test/            # Test utilities and setup
 ```
 
 ## Folder Responsibilities
 
+### `pages/` - Route Pages
+
+Each page follows a consistent structure with internal organization:
+
+```
+pages/
+└── [page-name]/
+    ├── features/           # Page-specific UI components
+    │   ├── [page].header.tsx
+    │   ├── [page].form.tsx
+    │   └── [page].list.tsx
+    ├── registry/           # Constants, types, static data
+    │   ├── [page].constants.ts
+    │   └── [page].types.ts
+    ├── model/              # Hooks with business logic
+    │   └── use-[action].ts
+    └── [page].page.tsx     # Main page component (composition only)
+```
+
+**Example - Login page:**
+
+```
+pages/auth/login/
+├── features/
+│   ├── login.header.tsx
+│   ├── login.form.tsx
+│   └── login.footer.tsx
+├── registry/
+│   └── login.types.ts      # Zod schemas, form types
+├── model/
+│   └── use-login.ts        # Login form logic, API mutation
+└── login.page.tsx          # Composes header + form + footer
+```
+
+**Key principle:** The main page component should be pure composition with no business logic. All logic lives in `model/` hooks, used directly by the components that need them.
+
+### `features/` - Shared Feature Modules
+
+Features are reusable across multiple pages. They follow the same structure as pages:
+
+```
+features/
+└── sidebar/
+    ├── ui/                 # UI components
+    │   ├── sidebar-logo.tsx
+    │   ├── sidebar-nav.tsx
+    │   ├── sidebar-logout-button.tsx
+    │   └── sidebar-theme-toggle.tsx
+    ├── registry/           # Constants and types
+    │   ├── sidebar.constants.ts
+    │   └── sidebar.types.ts
+    ├── model/              # Business logic hooks
+    │   └── use-logout.ts
+    └── sidebar.tsx         # Main feature component
+```
+
+**Key principle:** Each UI component manages its own state. No props drilling from parent - components get state directly from stores or hooks.
+
 ### `configs/` - Application Infrastructure
 
-The `configs/` folder contains **application-level infrastructure and global configurations**. These are singletons and services that the entire application depends on.
-
-**What belongs in `configs/`:**
-
-- API client configuration (base URL, interceptors/middleware)
-- Theme configuration (store, provider, colors)
-- Internationalization (i18n) setup
-- Global state stores (app-wide singletons)
-- WebSocket configuration
-- Storage service configuration
-- Environment variables helpers
-
-**Examples:**
+Contains application-level singletons and configurations:
 
 ```
 configs/
 ├── api/
-│   ├── client.ts           # OpenAPI fetch client with middleware
-│   ├── query-client.ts     # TanStack Query client wrapper
+│   ├── client.ts           # OpenAPI fetch client with auth middleware
 │   └── types/
 │       └── api.generated.ts
-└── theme/
-    ├── theme.store.ts      # Zustand store for theme state
-    └── theme-provider.tsx  # React provider that applies theme
-```
-
-### `features/` - Business Domain Logic
-
-The `features/` folder contains **domain-specific business logic** - the actual features that users interact with.
-
-**What belongs in `features/`:**
-
-- Job tracking feature (job CRUD, filters, search)
-- Resume builder feature
-- Authentication feature (login, logout, session)
-- User profile feature
-- Any feature that represents a business domain
-
-**Structure:**
-
-```
-features/
-└── jobs/
-    ├── api/         # API hooks (useJobs, useCreateJob, etc.)
-    ├── model/       # Business logic, local stores if needed
-    └── ui/          # Feature-specific components
+├── auth/
+│   └── session.ts          # Session restoration logic
+├── query-client/
+│   └── query-client.ts     # TanStack Query client instance
+└── zustand/
+    ├── auth/
+    │   └── auth.store.ts   # Authentication state
+    └── theme/
+        └── theme.store.ts  # Theme state with persistence
 ```
 
 ### `shared/` - Pure Utilities
 
-The `shared/` folder contains **pure utilities with no side effects** - helper functions, types, and hooks that don't depend on application state.
+Contains utilities with no side effects:
 
-**What belongs in `shared/`:**
+```
+shared/
+├── shadcn/                 # shadcn/ui (auto-generated, don't edit)
+│   ├── components/         # UI primitives
+│   ├── hooks/              # shadcn hooks (use-mobile, etc.)
+│   └── utils/              # cn() utility
+├── assets/
+│   └── svg/                # SVG icon components
+└── enums/                  # Shared enums
+```
 
-- Utility functions (`cn()`, `formatDate()`, etc.)
-- Shared TypeScript types and interfaces
-- Zod validation schemas
-- Generic custom hooks (not app-specific)
-- Constants and enums
-
-**What does NOT belong in `shared/`:**
-
-- API clients (use `configs/api/`)
-- Global stores (use `configs/`)
-- Feature-specific code (use `features/`)
+**Note:** The `shadcn/` folder is auto-generated by the shadcn CLI. Don't manually edit files inside it.
 
 ## Architecture Patterns
 
-### Feature-Sliced Design (Adapted)
+### Component State Management
 
-Each feature module follows a consistent structure:
+Components get their state directly from the source, not via props:
 
+```typescript
+// Good - component gets state directly
+export const SidebarThemeToggle = () => {
+  const theme = useThemeStore((state) => state.theme);
+  const setTheme = useThemeStore((state) => state.setTheme);
+  // ...
+};
+
+// Bad - props drilling
+export const SidebarThemeToggle = ({ theme, onThemeChange }) => {
+  // ...
+};
 ```
-features/
-└── feature-name/
-    ├── api/         # API hooks using TanStack Query + openapi-react-query
-    ├── model/       # Business logic and feature-specific stores
-    └── ui/          # React components specific to this feature
+
+### Page Composition Pattern
+
+Pages are pure composition of feature components:
+
+```typescript
+// Good - pure composition
+export const LoginPage = () => {
+  return (
+    <Card>
+      <LoginHeader />
+      <LoginForm />
+      <LoginFooter />
+    </Card>
+  );
+};
+
+// Bad - logic in page
+export const LoginPage = () => {
+  const { data, handleSubmit } = useLogin(); // Don't do this
+  return (
+    <Card>
+      <LoginHeader />
+      <LoginForm data={data} onSubmit={handleSubmit} /> // Props drilling
+    </Card>
+  );
+};
 ```
 
 ### State Management
 
-- **Server State**: TanStack Query handles all data fetching, caching, and mutations
-- **Client State**: Zustand for global UI state (theme, sidebar, modals) in `configs/`
-- **Local State**: React's useState/useReducer for component-level state
+- **Server State**: TanStack Query for data fetching and caching
+- **Client State**: Zustand stores in `configs/zustand/`
+- **Local State**: React useState for component-level state
 
 ### API Integration
 
-We use the OpenAPI stack for type-safe API calls:
+OpenAPI stack for type-safe API calls:
 
 1. `openapi-typescript` generates types from OpenAPI spec
 2. `openapi-fetch` provides a type-safe fetch client
 3. `openapi-react-query` creates TanStack Query hooks
 
-API hooks live in feature folders:
-
 ```typescript
-// features/jobs/api/use-jobs.ts
-import { $api } from '@configs/api/query-client';
+// configs/api/client.ts
+export const $api = createClient(fetchClient);
+export const $publicApi = createClient(publicFetchClient);
 
-export function useJobs() {
-  return $api.useQuery('get', '/api/jobs');
-}
+// Usage in hooks
+const mutation = $publicApi.useMutation('post', '/api/auth/sign-in', {
+  onSuccess: () => {
+    /* ... */
+  },
+});
 ```
 
 ### Routing
 
 TanStack Router with file-based routing:
 
-- Routes are defined in `src/app/routes/`
-- Route tree is auto-generated to `src/app/routeTree.gen.ts`
-- Each route file exports a `Route` object
+- Routes defined in `src/app/routes/`
+- Protected routes under `_authenticated/` layout
+- Auth routes under `auth/`
 
-## Path Aliases
+```
+routes/
+├── __root.tsx              # Root layout
+├── _authenticated.tsx      # Protected layout (checks auth)
+├── _authenticated/
+│   ├── index.tsx           # Home (protected)
+│   ├── jobs.tsx
+│   └── ...
+└── auth/
+    ├── login.tsx
+    ├── signup.tsx
+    └── callback.tsx
+```
 
-| Alias          | Path                |
-| -------------- | ------------------- |
-| `@/`           | `./src/`            |
-| `@app/`        | `./src/app/`        |
-| `@pages/`      | `./src/pages/`      |
-| `@features/`   | `./src/features/`   |
-| `@components/` | `./src/components/` |
-| `@shared/`     | `./src/shared/`     |
-| `@configs/`    | `./src/configs/`    |
+## Import Conventions
+
+### Absolute Imports Only
+
+Use the `@/` alias for all imports. No relative imports (except in `shared/shadcn/`):
+
+```typescript
+// Good - absolute imports
+import { Button } from '@/shared/shadcn/components/button';
+import { useLogin } from '@/pages/auth/login/model/use-login';
+import { useAuthStore } from '@/configs/zustand/auth/auth.store';
+
+// Bad - relative imports
+import { Button } from '../../../shared/shadcn/components/button';
+import { useLogin } from '../model/use-login';
+```
+
+### Type Imports
+
+Use `import type` for type-only imports:
+
+```typescript
+import type { Theme } from '@/configs/zustand/theme/theme.store';
+```
+
+## Naming Conventions
+
+| Type       | Convention                        | Example                          |
+| ---------- | --------------------------------- | -------------------------------- |
+| Files      | kebab-case                        | `use-login.ts`, `login.form.tsx` |
+| Folders    | kebab-case                        | `google-login-button/`           |
+| Components | PascalCase                        | `LoginForm`, `SidebarNav`        |
+| Hooks      | camelCase with `use` prefix       | `useLogin`, `useAuthStore`       |
+| Types      | PascalCase                        | `Theme`, `SignInFormData`        |
+| Constants  | camelCase or SCREAMING_SNAKE_CASE | `navItems`, `API_BASE_URL`       |
 
 ## Code Conventions
 
 ### No Barrel Files
 
-**Do not create barrel files (`index.ts` files that only re-export from other files).**
-
-Barrel files cause issues with:
-
-- Tree-shaking and bundle size
-- Circular dependencies
-- IDE auto-import confusion
-- Slower TypeScript compilation
-
-Instead, import directly from the source file:
+Do not create `index.ts` files that only re-export. Import directly from source:
 
 ```typescript
-// Good - direct import
-import { useThemeStore } from '@configs/theme/theme.store';
-import { HomePage } from '@pages/home/home';
+// Good
+import { useThemeStore } from '@/configs/zustand/theme/theme.store';
 
-// Bad - barrel file import
-import { useThemeStore } from '@configs/theme';
-import { HomePage } from '@pages/home';
+// Bad
+import { useThemeStore } from '@/configs/zustand/theme';
 ```
 
-### Imports
+### Component Structure
 
-- Use path aliases for cross-module imports
-- Use relative imports within the same module
-- Type imports use `import type { ... }`
-- Always import directly from source files, not barrel files
+Components follow this order:
 
-### Components
+1. Imports
+2. Types (if component-specific)
+3. Component function
+4. Export
 
-- Use function declarations for components
-- Co-locate tests with components
+```typescript
+import { Button } from '@/shared/shadcn/components/button';
+import { useLogin } from '@/pages/auth/login/model/use-login';
 
-### Naming
+export const LoginForm = () => {
+  const { loginData, handleSubmit } = useLogin();
 
-- Files: kebab-case (`theme-toggle.tsx`)
-- Components: PascalCase (`ThemeToggle`)
-- Hooks: camelCase with `use` prefix (`useThemeStore`)
-- Types: PascalCase (`Theme`, `ThemeState`)
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* ... */}
+    </form>
+  );
+};
+```

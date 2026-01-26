@@ -1,27 +1,17 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { queryClient } from '@/configs/query-client/query-client';
 import type { ReactNode } from 'react';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60, // 1 minute
-      gcTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
 
 interface QueryProviderProps {
   children: ReactNode;
 }
 
-export function QueryProvider({ children }: QueryProviderProps) {
+export const QueryProvider = ({ children }: QueryProviderProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
-}
+};

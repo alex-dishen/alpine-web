@@ -16,17 +16,19 @@ interface WrapperProps {
   children: ReactNode;
 }
 
-function createWrapper() {
+const createWrapper = () => {
   const testQueryClient = createTestQueryClient();
 
-  return function Wrapper({ children }: WrapperProps) {
+  const Wrapper = ({ children }: WrapperProps) => {
     return (
       <QueryClientProvider client={testQueryClient}>
         {children}
       </QueryClientProvider>
     );
   };
-}
+
+  return Wrapper;
+};
 
 const customRender = (
   ui: ReactElement,

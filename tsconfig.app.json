@@ -20,7 +20,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
+    "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
@@ -31,7 +31,6 @@
       "@app/*": ["./src/app/*"],
       "@pages/*": ["./src/pages/*"],
       "@features/*": ["./src/features/*"],
-      "@components/*": ["./src/components/*"],
       "@shared/*": ["./src/shared/*"],
       "@configs/*": ["./src/configs/*"]
     }
