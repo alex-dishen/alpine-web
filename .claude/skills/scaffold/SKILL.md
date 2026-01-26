@@ -34,6 +34,10 @@ src/features/[name]/
 
 Reference: `src/features/sidebar/`
 
+## Before Creating Components
+
+Always check for existing shadcn components before creating new UI elements. Use context7 MCP to search for available components in `src/shared/shadcn/components/`.
+
 ## Patterns
 
 **Main component** - Pure composition, no logic:
