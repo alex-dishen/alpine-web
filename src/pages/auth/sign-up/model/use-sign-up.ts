@@ -33,8 +33,10 @@ export const useSignUp = () => {
       });
       navigate({ to: '/' });
     },
-    onError: () => {
-      setErrors({ email: 'Registration failed' });
+    onError: (error) => {
+      const message =
+        (error as { message?: string })?.message || 'Registration failed';
+      setErrors({ email: message });
     },
   });
 

@@ -7,7 +7,7 @@ export const LoginFooter = () => {
       <p className="text-muted-foreground text-sm">
         Don&apos;t have an account?{' '}
         <Link
-          to="/auth/signup"
+          to="/auth/sign-up"
           className="text-primary underline-offset-4 hover:underline"
         >
           Sign up

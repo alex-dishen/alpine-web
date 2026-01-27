@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root';
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated';
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index';
-import { Route as AuthSignupRouteImport } from './routes/auth/signup';
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up';
 import { Route as AuthLoginRouteImport } from './routes/auth/login';
 import { Route as AuthErrorRouteImport } from './routes/auth/error';
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback';
@@ -29,9 +29,9 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any);
-const AuthSignupRoute = AuthSignupRouteImport.update({
-  id: '/auth/signup',
-  path: '/auth/signup',
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/auth/sign-up',
+  path: '/auth/sign-up',
   getParentRoute: () => rootRouteImport,
 } as any);
 const AuthLoginRoute = AuthLoginRouteImport.update({
@@ -79,7 +79,7 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute;
   '/auth/error': typeof AuthErrorRoute;
   '/auth/login': typeof AuthLoginRoute;
-  '/auth/signup': typeof AuthSignupRoute;
+  '/auth/sign-up': typeof AuthSignUpRoute;
 }
 export interface FileRoutesByTo {
   '/analytics': typeof AuthenticatedAnalyticsRoute;
@@ -89,7 +89,7 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute;
   '/auth/error': typeof AuthErrorRoute;
   '/auth/login': typeof AuthLoginRoute;
-  '/auth/signup': typeof AuthSignupRoute;
+  '/auth/sign-up': typeof AuthSignUpRoute;
   '/': typeof AuthenticatedIndexRoute;
 }
 export interface FileRoutesById {
@@ -102,7 +102,7 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute;
   '/auth/error': typeof AuthErrorRoute;
   '/auth/login': typeof AuthLoginRoute;
-  '/auth/signup': typeof AuthSignupRoute;
+  '/auth/sign-up': typeof AuthSignUpRoute;
   '/_authenticated/': typeof AuthenticatedIndexRoute;
 }
 export interface FileRouteTypes {
@@ -116,7 +116,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/error'
     | '/auth/login'
-    | '/auth/signup';
+    | '/auth/sign-up';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/analytics'
@@ -126,7 +126,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/error'
     | '/auth/login'
-    | '/auth/signup'
+    | '/auth/sign-up'
     | '/';
   id:
     | '__root__'
@@ -138,7 +138,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/error'
     | '/auth/login'
-    | '/auth/signup'
+    | '/auth/sign-up'
     | '/_authenticated/';
   fileRoutesById: FileRoutesById;
 }
@@ -147,7 +147,7 @@ export interface RootRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute;
   AuthErrorRoute: typeof AuthErrorRoute;
   AuthLoginRoute: typeof AuthLoginRoute;
-  AuthSignupRoute: typeof AuthSignupRoute;
+  AuthSignUpRoute: typeof AuthSignUpRoute;
 }
 
 declare module '@tanstack/react-router' {
@@ -166,11 +166,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport;
       parentRoute: typeof AuthenticatedRoute;
     };
-    '/auth/signup': {
-      id: '/auth/signup';
-      path: '/auth/signup';
-      fullPath: '/auth/signup';
-      preLoaderRoute: typeof AuthSignupRouteImport;
+    '/auth/sign-up': {
+      id: '/auth/sign-up';
+      path: '/auth/sign-up';
+      fullPath: '/auth/sign-up';
+      preLoaderRoute: typeof AuthSignUpRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     '/auth/login': {
@@ -250,7 +250,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   AuthErrorRoute: AuthErrorRoute,
   AuthLoginRoute: AuthLoginRoute,
-  AuthSignupRoute: AuthSignupRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
