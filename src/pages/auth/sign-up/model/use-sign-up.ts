@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { $publicApi } from '@/configs/api/client';
+import { USER_QUERY_KEY } from '@/configs/api/query-keys';
 import { useAuthStore } from '@/configs/zustand/auth/auth.store';
 import {
   signUpSchema,
@@ -28,9 +29,7 @@ export const useSignUp = () => {
   const mutation = $publicApi.useMutation('post', '/api/auth/sign-up', {
     onSuccess: () => {
       setAuthenticated(true);
-      queryClient.invalidateQueries({
-        queryKey: ['get', '/api/users/current'],
-      });
+      queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
       navigate({ to: '/' });
     },
     onError: (error) => {

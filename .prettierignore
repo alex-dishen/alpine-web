@@ -1,0 +1,6 @@
+dist/
+node_modules/
+src/app/routeTree.gen.ts
+src/configs/api/types/api.generated.ts
+src/configs/api/query-keys.ts
+src/shared/shadcn/

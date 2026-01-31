@@ -8,105 +8,105 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root';
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated';
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index';
-import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up';
-import { Route as AuthLoginRouteImport } from './routes/auth/login';
-import { Route as AuthErrorRouteImport } from './routes/auth/error';
-import { Route as AuthCallbackRouteImport } from './routes/auth/callback';
-import { Route as AuthenticatedResumeRouteImport } from './routes/_authenticated/resume';
-import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge';
-import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs';
-import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics';
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AuthErrorRouteImport } from './routes/auth/error'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as AuthenticatedResumeRouteImport } from './routes/_authenticated/resume'
+import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
+import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs'
+import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/auth/sign-up',
   path: '/auth/sign-up',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/auth/login',
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthErrorRoute = AuthErrorRouteImport.update({
   id: '/auth/error',
   path: '/auth/error',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedResumeRoute = AuthenticatedResumeRouteImport.update({
   id: '/resume',
   path: '/resume',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthenticatedKnowledgeRoute = AuthenticatedKnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthenticatedJobsRoute = AuthenticatedJobsRouteImport.update({
   id: '/jobs',
   path: '/jobs',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute;
-  '/analytics': typeof AuthenticatedAnalyticsRoute;
-  '/jobs': typeof AuthenticatedJobsRoute;
-  '/knowledge': typeof AuthenticatedKnowledgeRoute;
-  '/resume': typeof AuthenticatedResumeRoute;
-  '/auth/callback': typeof AuthCallbackRoute;
-  '/auth/error': typeof AuthErrorRoute;
-  '/auth/login': typeof AuthLoginRoute;
-  '/auth/sign-up': typeof AuthSignUpRoute;
+  '/': typeof AuthenticatedIndexRoute
+  '/analytics': typeof AuthenticatedAnalyticsRoute
+  '/jobs': typeof AuthenticatedJobsRoute
+  '/knowledge': typeof AuthenticatedKnowledgeRoute
+  '/resume': typeof AuthenticatedResumeRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/error': typeof AuthErrorRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
 }
 export interface FileRoutesByTo {
-  '/analytics': typeof AuthenticatedAnalyticsRoute;
-  '/jobs': typeof AuthenticatedJobsRoute;
-  '/knowledge': typeof AuthenticatedKnowledgeRoute;
-  '/resume': typeof AuthenticatedResumeRoute;
-  '/auth/callback': typeof AuthCallbackRoute;
-  '/auth/error': typeof AuthErrorRoute;
-  '/auth/login': typeof AuthLoginRoute;
-  '/auth/sign-up': typeof AuthSignUpRoute;
-  '/': typeof AuthenticatedIndexRoute;
+  '/analytics': typeof AuthenticatedAnalyticsRoute
+  '/jobs': typeof AuthenticatedJobsRoute
+  '/knowledge': typeof AuthenticatedKnowledgeRoute
+  '/resume': typeof AuthenticatedResumeRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/error': typeof AuthErrorRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  '/_authenticated': typeof AuthenticatedRouteWithChildren;
-  '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute;
-  '/_authenticated/jobs': typeof AuthenticatedJobsRoute;
-  '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute;
-  '/_authenticated/resume': typeof AuthenticatedResumeRoute;
-  '/auth/callback': typeof AuthCallbackRoute;
-  '/auth/error': typeof AuthErrorRoute;
-  '/auth/login': typeof AuthLoginRoute;
-  '/auth/sign-up': typeof AuthSignUpRoute;
-  '/_authenticated/': typeof AuthenticatedIndexRoute;
+  __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
+  '/_authenticated/jobs': typeof AuthenticatedJobsRoute
+  '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
+  '/_authenticated/resume': typeof AuthenticatedResumeRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/error': typeof AuthErrorRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/analytics'
@@ -116,8 +116,8 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/error'
     | '/auth/login'
-    | '/auth/sign-up';
-  fileRoutesByTo: FileRoutesByTo;
+    | '/auth/sign-up'
+  fileRoutesByTo: FileRoutesByTo
   to:
     | '/analytics'
     | '/jobs'
@@ -127,7 +127,7 @@ export interface FileRouteTypes {
     | '/auth/error'
     | '/auth/login'
     | '/auth/sign-up'
-    | '/';
+    | '/'
   id:
     | '__root__'
     | '/_authenticated'
@@ -139,98 +139,98 @@ export interface FileRouteTypes {
     | '/auth/error'
     | '/auth/login'
     | '/auth/sign-up'
-    | '/_authenticated/';
-  fileRoutesById: FileRoutesById;
+    | '/_authenticated/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
-  AuthCallbackRoute: typeof AuthCallbackRoute;
-  AuthErrorRoute: typeof AuthErrorRoute;
-  AuthLoginRoute: typeof AuthLoginRoute;
-  AuthSignUpRoute: typeof AuthSignUpRoute;
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthErrorRoute: typeof AuthErrorRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/_authenticated': {
-      id: '/_authenticated';
-      path: '';
-      fullPath: '/';
-      preLoaderRoute: typeof AuthenticatedRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/': {
-      id: '/_authenticated/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/auth/sign-up': {
-      id: '/auth/sign-up';
-      path: '/auth/sign-up';
-      fullPath: '/auth/sign-up';
-      preLoaderRoute: typeof AuthSignUpRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/auth/sign-up'
+      path: '/auth/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/login': {
-      id: '/auth/login';
-      path: '/auth/login';
-      fullPath: '/auth/login';
-      preLoaderRoute: typeof AuthLoginRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/error': {
-      id: '/auth/error';
-      path: '/auth/error';
-      fullPath: '/auth/error';
-      preLoaderRoute: typeof AuthErrorRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/auth/error'
+      path: '/auth/error'
+      fullPath: '/auth/error'
+      preLoaderRoute: typeof AuthErrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/callback': {
-      id: '/auth/callback';
-      path: '/auth/callback';
-      fullPath: '/auth/callback';
-      preLoaderRoute: typeof AuthCallbackRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/resume': {
-      id: '/_authenticated/resume';
-      path: '/resume';
-      fullPath: '/resume';
-      preLoaderRoute: typeof AuthenticatedResumeRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
+      id: '/_authenticated/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof AuthenticatedResumeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/knowledge': {
-      id: '/_authenticated/knowledge';
-      path: '/knowledge';
-      fullPath: '/knowledge';
-      preLoaderRoute: typeof AuthenticatedKnowledgeRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
+      id: '/_authenticated/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof AuthenticatedKnowledgeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/jobs': {
-      id: '/_authenticated/jobs';
-      path: '/jobs';
-      fullPath: '/jobs';
-      preLoaderRoute: typeof AuthenticatedJobsRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
+      id: '/_authenticated/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof AuthenticatedJobsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/analytics': {
-      id: '/_authenticated/analytics';
-      path: '/analytics';
-      fullPath: '/analytics';
-      preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
+      id: '/_authenticated/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute;
-  AuthenticatedJobsRoute: typeof AuthenticatedJobsRoute;
-  AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute;
-  AuthenticatedResumeRoute: typeof AuthenticatedResumeRoute;
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
+  AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
+  AuthenticatedJobsRoute: typeof AuthenticatedJobsRoute
+  AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
+  AuthenticatedResumeRoute: typeof AuthenticatedResumeRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -239,11 +239,11 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedResumeRoute: AuthenticatedResumeRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-};
+}
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren
-);
+  AuthenticatedRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
@@ -251,7 +251,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthErrorRoute: AuthErrorRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignUpRoute: AuthSignUpRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()

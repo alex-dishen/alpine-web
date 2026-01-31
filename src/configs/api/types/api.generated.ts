@@ -4,384 +4,1570 @@
  */
 
 export interface paths {
-  '/api/auth/sign-in': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/sign-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Log in into the system */
+        post: operations["AuthController_signIn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Log in into the system */
-    post: operations['AuthController_signIn'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/sign-up': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/sign-up": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign up for a new account */
+        post: operations["AuthController_signUp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Sign up for a new account */
-    post: operations['AuthController_signUp'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/sign-in/oauth': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh access token */
+        post: operations["AuthController_refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Sign in with OAuth provider (Google, LinkedIn, Apple) */
-    post: operations['AuthController_oauthSignIn'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/refresh': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Logout a user from the system */
+        post: operations["AuthController_logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Refresh access token */
-    post: operations['AuthController_refresh'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/logout': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Initiate Google OAuth flow */
+        get: operations["AuthController_initiateGoogleOAuth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Logout a user from the system */
-    post: operations['AuthController_logout'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/google': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/callback/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Handle Google OAuth callback */
+        get: operations["AuthController_handleGoogleCallback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Initiate Google OAuth flow */
-    get: operations['AuthController_initiateGoogleOAuth'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/callback/google': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user */
+        get: operations["UsersController_getCurrentUser"];
+        /** Update current user */
+        put: operations["UsersController_updateCurrentUser"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Handle Google OAuth callback */
-    get: operations['AuthController_handleGoogleCallback'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/users/current': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/current/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get user preferences */
+        get: operations["PreferencesController_getPreferences"];
+        /** Update user preferences */
+        put: operations["PreferencesController_updatePreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get current user */
-    get: operations['UserController_getCurrentUser'];
-    /** Update current user */
-    put: operations['UserController_updateCurrentUser'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/api/jobs/stages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all job stages for the current user */
+        get: operations["StagesController_getStages"];
+        put?: never;
+        /** Create a new job stage */
+        post: operations["StagesController_createStage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/stages/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a job stage */
+        put: operations["StagesController_updateStage"];
+        post?: never;
+        /** Delete a job stage */
+        delete: operations["StagesController_deleteStage"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/stages/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reorder job stages */
+        put: operations["StagesController_reorderStages"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/columns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all custom column definitions with options */
+        get: operations["ColumnsController_getColumns"];
+        put?: never;
+        /** Add a custom column definition */
+        post: operations["ColumnsController_createColumn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/columns/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a custom column definition */
+        put: operations["ColumnsController_updateColumn"];
+        post?: never;
+        /** Delete a custom column definition */
+        delete: operations["ColumnsController_deleteColumn"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/columns/{columnId}/options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add an option to a SELECT/MULTI_SELECT column */
+        post: operations["ColumnOptionsController_createOption"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/columns/options/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a column option */
+        put: operations["ColumnOptionsController_updateOption"];
+        post?: never;
+        /** Delete a column option */
+        delete: operations["ColumnOptionsController_deleteOption"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/columns/{columnId}/options/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reorder options within a column */
+        put: operations["ColumnOptionsController_reorderOptions"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{jobId}/interviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List interviews for a job application */
+        get: operations["InterviewsController_getInterviewsForJob"];
+        put?: never;
+        /** Create an interview for a job application */
+        post: operations["InterviewsController_createInterview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/interviews/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all interviews for calendar view */
+        get: operations["InterviewsController_getInterviewsForCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/interviews/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update an interview */
+        put: operations["InterviewsController_updateInterview"];
+        post?: never;
+        /** Delete an interview */
+        delete: operations["InterviewsController_deleteInterview"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{jobId}/values/{columnId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Upsert a column value for a job application */
+        put: operations["ColumnValuesController_upsertValue"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** List job applications with cursor pagination */
+        post: operations["ApplicationsController_getJobs"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get total count of job applications with filters */
+        get: operations["ApplicationsController_getJobsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a new job application */
+        post: operations["ApplicationsController_createJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a single job application with details */
+        get: operations["ApplicationsController_getJob"];
+        /** Update a job application */
+        put: operations["ApplicationsController_updateJob"];
+        post?: never;
+        /** Archive (soft delete) a job application */
+        delete: operations["ApplicationsController_archiveJob"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    SingInDto: {
-      /** Format: email */
-      email: string;
-      password: string;
+    schemas: {
+        SingInDto: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        MessageDto: {
+            message: string;
+        };
+        SignUpDto: {
+            first_name: string;
+            password: string;
+            confirmation_password: string;
+            last_name: string;
+            /** Format: email */
+            email: string;
+        };
+        UserDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            /** Format: date-time */
+            created_at: string;
+            last_name: string;
+            first_name: string;
+            /** Format: date-time */
+            updated_at: string | null;
+            avatar_id: string | null;
+        };
+        UpdateUserDto: {
+            first_name?: string;
+            last_name?: string;
+            /** Format: email */
+            email?: string;
+            password: string;
+            confirmation_password: string;
+            avatar_id?: string;
+        };
+        UserPreferencesDto: {
+            preferences: Record<string, never>;
+        };
+        UpdatePreferencesDto: {
+            preferences: Record<string, never>;
+        };
+        JobStageWithCountResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            user_id: string;
+            name: string;
+            /** @description Hex color code */
+            color: string;
+            /** @enum {string} */
+            category: "initial" | "interview" | "positive" | "negative";
+            position: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at?: string | null;
+            /** @description Number of jobs in this stage */
+            job_count: number;
+        };
+        CreateStageDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @enum {string} */
+            category: "initial" | "interview" | "positive" | "negative";
+            position: number;
+        };
+        UpdateStageDto: {
+            name?: string;
+            color?: string;
+            /** @enum {string} */
+            category?: "initial" | "interview" | "positive" | "negative";
+            position?: number;
+        };
+        ReorderStagesDto: {
+            stage_ids: string[];
+        };
+        JobColumnOptionResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            column_id: string;
+            label: string;
+            /** @description Hex color code */
+            color: string;
+            position: number;
+        };
+        JobColumnWithOptionsResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            user_id: string;
+            name: string;
+            /** @enum {string} */
+            column_type: "text" | "number" | "date" | "url" | "checkbox" | "select" | "multi_select";
+            options: components["schemas"]["JobColumnOptionResponseDto"][];
+        };
+        CreateColumnDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @enum {string} */
+            column_type: "text" | "number" | "date" | "url" | "checkbox" | "select" | "multi_select";
+        };
+        UpdateColumnDto: {
+            name?: string;
+        };
+        CreateColumnOptionDto: {
+            /** Format: uuid */
+            id: string;
+            label: string;
+            color?: string;
+            position: number;
+        };
+        UpdateColumnOptionDto: {
+            label?: string;
+            color?: string;
+            position?: number;
+        };
+        ReorderColumnOptionsDto: {
+            option_ids: string[];
+        };
+        JobInterviewResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            job_id: string;
+            /** @description Interview type (e.g., Phone Screen, Technical) */
+            type: string;
+            /** Format: date-time */
+            scheduled_at: string;
+            duration_mins: number;
+            location?: string | null;
+            meeting_url?: string | null;
+            notes?: string | null;
+            /** @enum {string} */
+            outcome: "pending" | "passed" | "failed" | "canceled";
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at?: string | null;
+        };
+        CreateInterviewDto: {
+            type: string;
+            scheduled_at: string;
+            duration_mins?: number;
+            location?: string;
+            /** Format: uri */
+            meeting_url?: string;
+            notes?: string;
+            /** @enum {string} */
+            outcome?: "pending" | "passed" | "failed" | "canceled";
+        };
+        JobApplicationSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            company_name: string;
+            job_title: string;
+        };
+        InterviewWithJobResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            job_id: string;
+            /** @description Interview type (e.g., Phone Screen, Technical) */
+            type: string;
+            /** Format: date-time */
+            scheduled_at: string;
+            duration_mins: number;
+            location?: string | null;
+            meeting_url?: string | null;
+            notes?: string | null;
+            /** @enum {string} */
+            outcome: "pending" | "passed" | "failed" | "canceled";
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at?: string | null;
+            job: components["schemas"]["JobApplicationSummaryDto"];
+        };
+        UpdateInterviewDto: {
+            type?: string;
+            scheduled_at?: string;
+            duration_mins?: number;
+            location?: string | null;
+            /** Format: uri */
+            meeting_url?: string | null;
+            notes?: string | null;
+            /** @enum {string} */
+            outcome?: "pending" | "passed" | "failed" | "canceled";
+        };
+        UpsertValueDto: {
+            text_value?: string | null;
+            /** Format: uuid */
+            option_id?: string | null;
+            option_ids?: string[];
+        };
+        CursorPaginationDto: {
+            /** @description Indicates if there is a next page */
+            hasNextPage: boolean;
+            /** @description Cursor for the next page */
+            cursor: string | null;
+        };
+        CursorPaginatedResult: {
+            /** @description Array of data items */
+            data: unknown[][];
+            /** @description Pagination meta */
+            pagination: components["schemas"]["CursorPaginationDto"];
+        };
+        JobStageResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            user_id: string;
+            name: string;
+            /** @description Hex color code */
+            color: string;
+            /** @enum {string} */
+            category: "initial" | "interview" | "positive" | "negative";
+            position: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at?: string | null;
+        };
+        JobApplicationWithStageResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            user_id: string;
+            /** Format: uuid */
+            stage_id: string;
+            company_name: string;
+            job_title: string;
+            salary_min?: number | null;
+            salary_max?: number | null;
+            /** @description Original job posting from job board/recruiter */
+            job_description?: string | null;
+            notes?: string | null;
+            /** Format: date-time */
+            applied_at: string;
+            is_archived: boolean;
+            /** Format: date-time */
+            archived_at?: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at?: string | null;
+            stage: components["schemas"]["JobStageResponseDto"];
+        };
+        JobFiltersBaseDto: {
+            search?: string;
+            /** Format: uuid */
+            stage_id?: string;
+            /** @enum {string} */
+            category?: "initial" | "interview" | "positive" | "negative";
+            is_archived?: boolean;
+        };
+        JobSortDto: {
+            /** @enum {string} */
+            sort_by: "stage" | "category" | "is_archived";
+            /** @enum {string} */
+            order: "asc" | "desc";
+        };
+        CursorPaginationRequestDto: {
+            take: number;
+            cursor: string | null;
+        };
+        JobFiltersDto: {
+            filters?: components["schemas"]["JobFiltersBaseDto"];
+            sort?: components["schemas"]["JobSortDto"];
+            pagination: components["schemas"]["CursorPaginationRequestDto"];
+        };
+        JobCountResponseDto: {
+            count: number;
+        };
+        CreateJobDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            stage_id: string;
+            company_name: string;
+            job_title: string;
+            salary_min?: number;
+            salary_max?: number;
+            job_description?: string;
+            notes?: string;
+            applied_at?: string;
+        };
+        JobColumnValueWithOptionResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            job_id: string;
+            /** Format: uuid */
+            column_id: string;
+            /** Format: uuid */
+            option_id?: string | null;
+            /** @description Value for TEXT, NUMBER, DATE, URL, CHECKBOX types */
+            value?: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at?: string | null;
+            option?: components["schemas"]["JobColumnOptionResponseDto"] | null;
+        };
+        JobApplicationWithDetailsResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            user_id: string;
+            /** Format: uuid */
+            stage_id: string;
+            company_name: string;
+            job_title: string;
+            salary_min?: number | null;
+            salary_max?: number | null;
+            /** @description Original job posting from job board/recruiter */
+            job_description?: string | null;
+            notes?: string | null;
+            /** Format: date-time */
+            applied_at: string;
+            is_archived: boolean;
+            /** Format: date-time */
+            archived_at?: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at?: string | null;
+            stage: components["schemas"]["JobStageResponseDto"];
+            column_values: components["schemas"]["JobColumnValueWithOptionResponseDto"][];
+            interviews: components["schemas"]["JobInterviewResponseDto"][];
+        };
+        UpdateJobDto: {
+            /** Format: uuid */
+            stage_id?: string;
+            company_name?: string;
+            job_title?: string;
+            salary_min?: number | null;
+            salary_max?: number | null;
+            job_description?: string | null;
+            notes?: string | null;
+            applied_at?: string;
+            is_archived?: boolean;
+        };
     };
-    MessageDto: {
-      message: string;
-    };
-    SignUpDto: {
-      first_name: string;
-      password: string;
-      confirmation_password: string;
-      last_name: string;
-      /** Format: email */
-      email: string;
-    };
-    OAuthSignInDto: {
-      code: string;
-      /** @enum {string} */
-      provider: 'google' | 'linkedin' | 'apple';
-    };
-    UserDto: {
-      /** Format: uuid */
-      id: string;
-      /** Format: email */
-      email: string;
-      /** Format: date-time */
-      created_at: string;
-      /** Format: date-time */
-      updated_at: string;
-      last_name: string;
-      first_name: string;
-      avatar: string | null;
-    };
-    UpdateUserDto: {
-      first_name?: string;
-      last_name?: string;
-      /** Format: email */
-      email?: string;
-      password: string;
-      confirmation_password: string;
-      avatar?: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  AuthController_signIn: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SingInDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_signIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['MessageDto'];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SingInDto"];
+            };
         };
-      };
-    };
-  };
-  AuthController_signUp: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SignUpDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
         };
-        content: {
-          'application/json': components['schemas']['MessageDto'];
+    };
+    AuthController_signUp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-  };
-  AuthController_oauthSignIn: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['OAuthSignInDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignUpDto"];
+            };
         };
-        content: {
-          'application/json': components['schemas']['MessageDto'];
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
         };
-      };
     };
-  };
-  AuthController_refresh: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['MessageDto'];
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
         };
-      };
     };
-  };
-  AuthController_logout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['MessageDto'];
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
         };
-      };
     };
-  };
-  AuthController_initiateGoogleOAuth: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_initiateGoogleOAuth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  AuthController_handleGoogleCallback: {
-    parameters: {
-      query: {
-        code: string;
-        state: string;
-        error: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  UserController_getCurrentUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_handleGoogleCallback: {
+        parameters: {
+            query: {
+                code: string;
+                state: string;
+                error: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['UserDto'];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  UserController_updateCurrentUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateUserDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    UsersController_getCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['MessageDto'];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDto"];
+                };
+            };
         };
-      };
     };
-  };
+    UsersController_updateCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    PreferencesController_getPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPreferencesDto"];
+                };
+            };
+        };
+    };
+    PreferencesController_updatePreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePreferencesDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    StagesController_getStages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobStageWithCountResponseDto"][];
+                };
+            };
+        };
+    };
+    StagesController_createStage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateStageDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    StagesController_updateStage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateStageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    StagesController_deleteStage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    StagesController_reorderStages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderStagesDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ColumnsController_getColumns: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobColumnWithOptionsResponseDto"][];
+                };
+            };
+        };
+    };
+    ColumnsController_createColumn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateColumnDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ColumnsController_updateColumn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateColumnDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ColumnsController_deleteColumn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ColumnOptionsController_createOption: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                columnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateColumnOptionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ColumnOptionsController_updateOption: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateColumnOptionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ColumnOptionsController_deleteOption: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ColumnOptionsController_reorderOptions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                columnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderColumnOptionsDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    InterviewsController_getInterviewsForJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobInterviewResponseDto"][];
+                };
+            };
+        };
+    };
+    InterviewsController_createInterview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInterviewDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    InterviewsController_getInterviewsForCalendar: {
+        parameters: {
+            query: {
+                start_date: string;
+                end_date: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewWithJobResponseDto"][];
+                };
+            };
+        };
+    };
+    InterviewsController_updateInterview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateInterviewDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    InterviewsController_deleteInterview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ColumnValuesController_upsertValue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+                columnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertValueDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_getJobs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JobFiltersDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CursorPaginatedResult"] & {
+                        data?: components["schemas"]["JobApplicationWithStageResponseDto"][];
+                    };
+                };
+            };
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationsController_getJobsCount: {
+        parameters: {
+            query?: {
+                search?: string;
+                stage_id?: string;
+                category?: "initial" | "interview" | "positive" | "negative";
+                is_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobCountResponseDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_createJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateJobDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_getJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobApplicationWithDetailsResponseDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_updateJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateJobDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_archiveJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
 }

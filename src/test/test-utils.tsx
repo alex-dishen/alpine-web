@@ -12,9 +12,9 @@ const createTestQueryClient = () =>
     },
   });
 
-interface WrapperProps {
+type WrapperProps = {
   children: ReactNode;
-}
+};
 
 const createWrapper = () => {
   const testQueryClient = createTestQueryClient();

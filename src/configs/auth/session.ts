@@ -1,4 +1,5 @@
 import { fetchClient } from '@/configs/api/client';
+import { USER_QUERY_KEY } from '@/configs/api/query-keys';
 import { queryClient } from '@/configs/query-client/query-client';
 import { useAuthStore } from '@/configs/zustand/auth/auth.store';
 
@@ -9,7 +10,7 @@ export const restoreSession = async (): Promise<boolean> => {
 
   try {
     const data = await queryClient.fetchQuery({
-      queryKey: ['get', '/api/users/current'],
+      queryKey: USER_QUERY_KEY,
       queryFn: async () => {
         const { data, error } = await fetchClient.GET('/api/users/current');
 
