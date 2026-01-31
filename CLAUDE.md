@@ -23,10 +23,15 @@ npm run test:e2e         # E2E tests (Playwright)
 
 ```
 src/
-├── app/routes/          # TanStack Router file-based routes
+├── app/
+│   ├── routes/          # TanStack Router file-based routes
+│   └── providers/       # App-level providers (query, theme, modals)
 ├── pages/[name]/        # Route pages (features/, registry/, model/)
 ├── features/[name]/     # Shared features (ui/, registry/, model/)
-├── configs/             # API client, stores, query client
+├── configs/
+│   ├── api/             # API client, generated types
+│   ├── query-client/    # TanStack Query config
+│   └── zustand/         # Zustand stores (auth, theme, modals)
 └── shared/shadcn/       # shadcn components (don't edit manually)
 ```
 
@@ -44,12 +49,30 @@ $publicApi.useMutation('post', '/api/auth/sign-in', { ... })
 
 // Protected endpoints (with auth middleware)
 $api.useQuery('get', '/api/users/current')
+$api.useMutation('put', '/api/jobs/{id}', { onSuccess: () => {...} })
+```
+
+**Query keys**: Always import from `@/configs/api/query-keys.ts`, never use inline keys:
+
+```typescript
+import { JOBS_QUERY_KEY } from '@/configs/api/query-keys';
+queryClient.invalidateQueries({ queryKey: JOBS_QUERY_KEY });
+```
+
+**Error handling**: Global via QueryClient caches. No need for `onError` toast handlers—errors display automatically via sonner (top-center).
+
+**ID generation**: Generate IDs at call site, not in hooks:
+
+```typescript
+mutation.mutate({ body: { id: crypto.randomUUID(), ...formData } });
 ```
 
 ## State Management
 
 - **Server state**: TanStack Query via `$api` / `$publicApi`
 - **Client state**: Zustand stores in `configs/zustand/`
+- **Modals**: Centralized system in `configs/zustand/modals/`
+- **Toasts**: sonner (globally handled, top-center position)
 - **Local state**: React useState
 
 ## Testing
@@ -58,3 +81,9 @@ $api.useQuery('get', '/api/users/current')
 npm run test -- auth.store    # Run specific test
 npm run test:e2e -- --grep "login"  # Run specific E2E
 ```
+
+## Skills
+
+- `/scaffold` - Create new pages or features with proper folder structure
+- `/data-hooks` - Patterns for hooks, queries, mutations, caching
+- `/modals` - Create modal windows using the centralized modal system

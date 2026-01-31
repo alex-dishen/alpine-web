@@ -107,6 +107,7 @@ Contains application-level singletons and configurations:
 configs/
 ├── api/
 │   ├── client.ts           # OpenAPI fetch client with auth middleware
+│   ├── query-keys.ts       # Centralized TanStack Query keys
 │   └── types/
 │       └── api.generated.ts
 ├── auth/
@@ -116,8 +117,12 @@ configs/
 └── zustand/
     ├── auth/
     │   └── auth.store.ts   # Authentication state
-    └── theme/
-        └── theme.store.ts  # Theme state with persistence
+    ├── theme/
+    │   └── theme.store.ts  # Theme state with persistence
+    └── modals/
+        ├── modals.props.ts     # Modal props (single source of truth)
+        ├── modals.registry.ts  # MODALS const, component registry
+        └── modals.store.ts     # openModal, closeModal
 ```
 
 ### `shared/` - Pure Utilities
@@ -189,7 +194,23 @@ export const LoginPage = () => {
 
 - **Server State**: TanStack Query for data fetching and caching
 - **Client State**: Zustand stores in `configs/zustand/`
+- **Modals**: Centralized modal system in `configs/zustand/modals/`
+- **Toasts**: sonner (global error handling via QueryClient, top-center position)
 - **Local State**: React useState for component-level state
+
+### Modals
+
+Modals use a centralized Zustand-based system. Props are defined in `modals.props.ts`, registered in `modals.registry.ts`, and opened via the store:
+
+```typescript
+import { useModalsStore } from '@/configs/zustand/modals/modals.store';
+import { MODALS } from '@/configs/zustand/modals/modals.registry';
+
+const openModal = useModalsStore((state) => state.openModal);
+openModal(MODALS.JobsDetail, { jobId: '123' });
+```
+
+Use the `/modals` skill when creating new modals.
 
 ### API Integration
 
@@ -204,13 +225,34 @@ OpenAPI stack for type-safe API calls:
 export const $api = createClient(fetchClient);
 export const $publicApi = createClient(publicFetchClient);
 
-// Usage in hooks
-const mutation = $publicApi.useMutation('post', '/api/auth/sign-in', {
+// configs/api/query-keys.ts - centralized query keys
+export const JOBS_QUERY_KEY = ['jobs'] as const;
+export const STAGES_QUERY_KEY = ['get', '/api/jobs/stages'] as const;
+
+// Usage in hooks - always use $api.useMutation, not raw useMutation
+// Always import query keys from @/configs/api/query-keys
+import { JOBS_QUERY_KEY } from '@/configs/api/query-keys';
+
+const mutation = $api.useMutation('post', '/api/jobs', {
   onSuccess: () => {
-    /* ... */
+    queryClient.invalidateQueries({ queryKey: JOBS_QUERY_KEY });
+  },
+});
+
+// At call site - generate ID where data is formed
+mutation.mutate({
+  body: {
+    id: crypto.randomUUID(),
+    ...formData,
   },
 });
 ```
+
+**Query keys**: All query keys are centralized in `@/configs/api/query-keys.ts`. Never use inline query keys like `['jobs']` directly—always import from this file.
+
+**Error handling**: Errors are handled globally via `QueryCache` and `MutationCache` in `query-client.ts`. Errors automatically display via sonner toasts. Don't add `onError` handlers for toast notifications.
+
+**ID generation**: Generate IDs at the call site (where data is formed), not inside mutation hooks.
 
 ### Routing
 
@@ -233,6 +275,127 @@ routes/
     ├── signup.tsx
     └── callback.tsx
 ```
+
+## Advanced Patterns
+
+### Dynamic Column Generation
+
+For tables with user-configurable columns, use a factory function pattern:
+
+```typescript
+// jobs-table-columns.tsx
+type CreateJobColumnsOptions = {
+  columns: Column[];           // Dynamic columns from API
+  stages: Stage[];             // Reference data
+  onUpdateJob: (id: string, field: string, value: unknown) => void;
+  onUpdateColumnValue: (jobId: string, columnId: string, value: Record<string, unknown>) => void;
+  onDeleteJob: (id: string) => void;
+  onOpenDetail: (id: string) => void;
+};
+
+export const createJobColumns = (options: CreateJobColumnsOptions): ColumnDef<Job>[] => {
+  const { columns, stages, onUpdateJob, onUpdateColumnValue, onDeleteJob, onOpenDetail } = options;
+
+  // System columns (always present)
+  const systemColumns: ColumnDef<Job>[] = [
+    {
+      id: 'company_name',
+      header: 'Company',
+      cell: ({ row }) => (
+        <TextCell
+          value={row.original.company_name}
+          onChange={(value) => onUpdateJob(row.original.id, 'company_name', value)}
+        />
+      ),
+    },
+    // ... other system columns
+  ];
+
+  // Dynamic columns (from API)
+  const dynamicColumns: ColumnDef<Job>[] = columns.map((column) => ({
+    id: column.id,
+    header: column.name,
+    cell: ({ row }) => (
+      <DynamicCell
+        column={column}
+        value={row.original.column_values?.[column.id]}
+        onChange={(value) => onUpdateColumnValue(row.original.id, column.id, value)}
+      />
+    ),
+  }));
+
+  return [...systemColumns, ...dynamicColumns];
+};
+```
+
+**Usage in hook:**
+
+```typescript
+const tableColumns = useMemo(
+  () =>
+    createJobColumns({
+      columns,
+      stages,
+      onUpdateJob,
+      onDeleteJob,
+      onOpenDetail,
+    }),
+  [columns, stages, onUpdateJob, onDeleteJob, onOpenDetail]
+);
+```
+
+### Inline Cell Editing
+
+Self-contained editable cells manage their own edit state:
+
+```typescript
+type TextCellProps = {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+export const TextCell = ({ value, onChange }: TextCellProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(value);
+
+  // Sync with external value changes
+  useEffect(() => {
+    setEditValue(value);
+  }, [value]);
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    // Only trigger onChange if value actually changed
+    if (editValue !== value) {
+      onChange(editValue);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <Input
+        value={editValue}
+        onChange={(e) => setEditValue(e.target.value)}
+        onBlur={handleBlur}
+        onKeyDown={(e) => e.key === 'Enter' && handleBlur()}
+        autoFocus
+      />
+    );
+  }
+
+  return (
+    <div onClick={() => setIsEditing(true)} className="cursor-pointer">
+      {value || <span className="text-muted-foreground">-</span>}
+    </div>
+  );
+};
+```
+
+**Key points:**
+
+- Cell manages its own `isEditing` state
+- Only calls `onChange` when value actually changes (avoids unnecessary mutations)
+- Syncs with external value via `useEffect` for optimistic updates
 
 ## Import Conventions
 
