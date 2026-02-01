@@ -1,16 +1,25 @@
+import { cn } from '@/shared/shadcn/utils/utils';
 import { flexRender } from '@tanstack/react-table';
+import { Skeleton } from '@/shared/shadcn/components/skeleton';
+import type { JobFilters } from '@/pages/jobs/registry/jobs.types';
+import { useJobsTable } from '@/pages/jobs/features/jobs-table/model/use-jobs-table';
+import { DraggableHeader } from '@/pages/jobs/features/jobs-table/ui/draggable-header';
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from '@/shared/shadcn/components/table';
-import { Skeleton } from '@/shared/shadcn/components/skeleton';
-import { cn } from '@/shared/shadcn/utils/utils';
-import { useJobsTable } from '@/pages/jobs/features/jobs-table/model/use-jobs-table';
-import type { JobFilters } from '@/pages/jobs/registry/jobs.types';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import {
+  restrictToHorizontalAxis,
+  restrictToParentElement,
+} from '@dnd-kit/modifiers';
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 type JobsTableProps = {
   filters: JobFilters;
@@ -19,14 +28,17 @@ type JobsTableProps = {
 export const JobsTable = ({ filters }: JobsTableProps) => {
   const {
     jobs,
-    isLoading,
-    isFetchingNextPage,
-    tableContainerRef,
-    virtualRows,
-    totalSize,
-    headerGroups,
     rows,
+    sensors,
+    isLoading,
+    totalSize,
+    virtualRows,
+    columnOrder,
+    headerGroups,
+    tableContainerRef,
+    isFetchingNextPage,
     handleScroll,
+    handleDragEnd,
     handleOpenDetail,
   } = useJobsTable({ filters });
 
@@ -52,87 +64,91 @@ export const JobsTable = ({ filters }: JobsTableProps) => {
   }
 
   return (
-    <div
-      ref={tableContainerRef}
-      className="relative h-[calc(100vh-280px)] overflow-auto"
-      onScroll={handleScroll}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
+      onDragEnd={handleDragEnd}
     >
-      <Table>
-        <TableHeader className="bg-background sticky top-0 z-10">
-          {headerGroups.map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  style={{ width: header.getSize() }}
-                  className="border-r last:border-r-0"
+      <div
+        ref={tableContainerRef}
+        className="relative h-[calc(100vh-280px)] overflow-auto [&_[data-slot=table-container]]:overflow-visible"
+        onScroll={handleScroll}
+      >
+        <Table>
+          <TableHeader className="bg-background sticky top-0 z-10">
+            {headerGroups.map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                <SortableContext
+                  items={columnOrder}
+                  strategy={horizontalListSortingStrategy}
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {virtualRows.length > 0 && virtualRows[0].start > 0 && (
-            <tr style={{ height: virtualRows[0].start }} />
-          )}
-
-          {virtualRows.map((virtualRow) => {
-            const row = rows[virtualRow.index];
-
-            if (!row) return null;
-
-            return (
-              <TableRow
-                key={row.id}
-                data-index={virtualRow.index}
-                className={cn(
-                  'cursor-pointer transition-colors',
-                  virtualRow.index % 2 === 0 ? 'bg-background' : 'bg-muted/30'
-                )}
-                onClick={() => handleOpenDetail(row.original.id)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    style={{ width: cell.column.getSize() }}
-                    className="border-r p-0 last:border-r-0"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                  {headerGroup.headers.map((header) => (
+                    <DraggableHeader key={header.id} header={header} />
+                  ))}
+                </SortableContext>
               </TableRow>
-            );
-          })}
+            ))}
+          </TableHeader>
+          <TableBody>
+            {virtualRows.length > 0 && virtualRows[0].start > 0 && (
+              <tr style={{ height: virtualRows[0].start }} />
+            )}
 
-          {virtualRows.length > 0 && (
-            <tr
-              style={{
-                height:
-                  totalSize -
-                  virtualRows[virtualRows.length - 1].start -
-                  virtualRows[virtualRows.length - 1].size,
-              }}
-            />
-          )}
-        </TableBody>
-      </Table>
+            {virtualRows.map((virtualRow) => {
+              const row = rows[virtualRow.index];
 
-      {isFetchingNextPage && (
-        <div className="flex items-center justify-center py-4">
-          <div className="border-primary size-6 animate-spin rounded-full border-2 border-t-transparent" />
-          <span className="text-muted-foreground ml-2 text-sm">
-            Loading more...
-          </span>
-        </div>
-      )}
-    </div>
+              if (!row) return null;
+
+              return (
+                <TableRow
+                  key={row.id}
+                  data-index={virtualRow.index}
+                  className={cn(
+                    'cursor-pointer transition-colors',
+                    virtualRow.index % 2 === 0 ? 'bg-background' : 'bg-muted/30'
+                  )}
+                  onClick={() => handleOpenDetail(row.original.id)}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      style={{ width: cell.column.getSize() }}
+                      className="border-r p-0 last:border-r-0"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })}
+
+            {virtualRows.length > 0 && (
+              <tr
+                style={{
+                  height:
+                    totalSize -
+                    virtualRows[virtualRows.length - 1].start -
+                    virtualRows[virtualRows.length - 1].size,
+                }}
+              />
+            )}
+          </TableBody>
+        </Table>
+
+        {isFetchingNextPage && (
+          <div className="flex items-center justify-center py-4">
+            <div className="border-primary size-6 animate-spin rounded-full border-2 border-t-transparent" />
+            <span className="text-muted-foreground ml-2 text-sm">
+              Loading more...
+            </span>
+          </div>
+        )}
+      </div>
+    </DndContext>
   );
 };

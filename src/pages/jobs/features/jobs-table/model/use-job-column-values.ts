@@ -51,8 +51,5 @@ export const useUpsertColumnValue = () => {
         queryClient.setQueryData(JOBS_QUERY_KEY, ctx.previousJobs);
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: JOBS_QUERY_KEY });
-    },
   });
 };

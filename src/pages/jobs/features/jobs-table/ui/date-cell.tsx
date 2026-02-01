@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/shared/shadcn/components/button';
 import { Calendar } from '@/shared/shadcn/components/calendar';
 import {
@@ -44,12 +43,11 @@ export const DateCell = ({
         <Button
           variant="ghost"
           className={cn(
-            'h-8 w-full justify-start px-2 font-normal',
+            'h-8 w-full cursor-pointer justify-start px-2 font-normal',
             !value && 'text-muted-foreground',
             className
           )}
         >
-          <CalendarIcon className="mr-2 size-4" />
           {date ? format(date, 'MMM d, yyyy') : placeholder}
         </Button>
       </PopoverTrigger>

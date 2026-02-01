@@ -12,7 +12,7 @@ export const JobsTableView = ({ filters, setFilters }: JobsTableViewProps) => {
     <div className="space-y-4">
       <JobsFilterBar filters={filters} setFilters={setFilters} />
 
-      <div className="rounded-lg border">
+      <div className="rounded-lg">
         <JobsTable filters={filters} />
       </div>
     </div>

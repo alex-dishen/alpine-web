@@ -520,12 +520,14 @@ export interface components {
         JobColumnWithOptionsResponseDto: {
             /** Format: uuid */
             id: string;
-            /** Format: uuid */
-            user_id: string;
             name: string;
             /** @enum {string} */
             column_type: "text" | "number" | "date" | "url" | "checkbox" | "select" | "multi_select";
             options: components["schemas"]["JobColumnOptionResponseDto"][];
+            /** @description Whether this is a core column (not user-created) */
+            is_core: boolean;
+            /** @description The field key for core columns */
+            field_key: string | null;
         };
         CreateColumnDto: {
             /** Format: uuid */

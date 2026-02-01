@@ -91,7 +91,7 @@ export const UrlCell = ({
     <div
       onClick={handleStartEditing}
       className={cn(
-        'hover:bg-muted/50 flex cursor-pointer items-center gap-2 truncate rounded px-2 py-1',
+        'hover:bg-muted/50 flex cursor-text items-center gap-2 truncate rounded px-2 py-1',
         !value && 'text-muted-foreground',
         className
       )}

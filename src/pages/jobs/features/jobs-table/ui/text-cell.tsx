@@ -66,7 +66,7 @@ export const TextCell = ({
     <div
       onClick={handleStartEditing}
       className={cn(
-        'hover:bg-muted/50 cursor-pointer truncate rounded px-2 py-1',
+        'hover:bg-muted/50 cursor-text truncate rounded px-2 py-1',
         !value && 'text-muted-foreground',
         className
       )}

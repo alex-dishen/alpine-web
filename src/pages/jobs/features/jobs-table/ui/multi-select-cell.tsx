@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, ChevronDown, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { Button } from '@/shared/shadcn/components/button';
 import { Badge } from '@/shared/shadcn/components/badge';
 import {
@@ -62,7 +62,7 @@ export const MultiSelectCell = ({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'h-auto min-h-8 w-full justify-between px-2 font-normal',
+            'h-auto min-h-8 w-full cursor-pointer justify-between px-2 font-normal',
             !values.length && 'text-muted-foreground',
             className
           )}
@@ -92,7 +92,6 @@ export const MultiSelectCell = ({
                 ))
               : placeholder}
           </span>
-          <ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">

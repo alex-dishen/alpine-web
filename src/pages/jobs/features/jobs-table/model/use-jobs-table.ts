@@ -1,41 +1,38 @@
-import { useRef, useMemo, useCallback } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useRef, useMemo, useState, useEffect, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
-import { $api } from '@/configs/api/client';
-import { JOBS_QUERY_KEY } from '@/configs/api/query-keys';
-import { useJobsList } from '@/pages/jobs/features/jobs-table/model/use-jobs';
-import { useQuickUpdateJob } from '@/pages/jobs/features/jobs-table/model/use-quick-update-job';
-import { useUpsertColumnValue } from '@/pages/jobs/features/jobs-table/model/use-job-column-values';
-import { useModalsStore } from '@/configs/zustand/modals/modals.store';
-import { MODALS } from '@/configs/zustand/modals/modals.constants';
-import { createJobColumns } from '@/pages/jobs/features/jobs-table/ui/jobs-table-columns';
+import { arrayMove } from '@dnd-kit/sortable';
+import { createJobColumns } from '@/pages/jobs/features/jobs-table/registry/jobs-table-columns.factory';
+import { useJobsData } from '@/pages/jobs/features/jobs-table/model/use-jobs-data';
 import type { JobFilters } from '@/pages/jobs/registry/jobs.types';
+import {
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
 
 type UseJobsTableProps = {
   filters: JobFilters;
 };
 
 export const useJobsTable = ({ filters }: UseJobsTableProps) => {
-  const queryClient = useQueryClient();
-  const openModal = useModalsStore((state) => state.openModal);
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
-  // Data fetching
-  const { data: columns = [] } = $api.useQuery('get', '/api/jobs/columns');
-  const { data: stages = [] } = $api.useQuery('get', '/api/jobs/stages');
-  const { jobs, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useJobsList(filters);
-
-  // Mutations
-  const updateJob = useQuickUpdateJob();
-  const upsertColumnValue = useUpsertColumnValue();
-
-  const deleteJob = $api.useMutation('delete', '/api/jobs/{id}', {
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: JOBS_QUERY_KEY });
-    },
-  });
+  // Get business data
+  const {
+    jobs,
+    columns,
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    handleOpenDetail,
+    handleUpdateJob,
+    handleUpdateColumnValue,
+    handleDeleteJob,
+  } = useJobsData({ filters });
 
   // Virtualizer
   const virtualizer = useVirtualizer({
@@ -45,50 +42,7 @@ export const useJobsTable = ({ filters }: UseJobsTableProps) => {
     overscan: 100,
   });
 
-  // Handlers
-  const handleOpenDetail = useCallback(
-    (jobId: string) => {
-      openModal(MODALS.JobsDetail, { jobId });
-    },
-    [openModal]
-  );
-
-  const handleUpdateJob = useCallback(
-    (id: string, field: string, value: unknown) => {
-      updateJob.mutate({
-        params: { path: { id } },
-        body: { [field]: value },
-      });
-    },
-    [updateJob]
-  );
-
-  const handleUpdateColumnValue = useCallback(
-    (jobId: string, columnId: string, value: Record<string, unknown>) => {
-      upsertColumnValue.mutate({
-        params: { path: { jobId, columnId } },
-        body: value,
-      });
-    },
-    [upsertColumnValue]
-  );
-
-  const handleDeleteJob = useCallback(
-    (id: string) => {
-      openModal(MODALS.Confirm, {
-        title: 'Delete Job',
-        description:
-          'Are you sure you want to delete this job? This action cannot be undone.',
-        confirmLabel: 'Delete',
-        variant: 'destructive',
-        onConfirm: () => {
-          deleteJob.mutate({ params: { path: { id } } });
-        },
-      });
-    },
-    [openModal, deleteJob]
-  );
-
+  // Infinite scroll
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
       const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
@@ -106,7 +60,6 @@ export const useJobsTable = ({ filters }: UseJobsTableProps) => {
     () =>
       createJobColumns({
         columns,
-        stages,
         onUpdateJob: handleUpdateJob,
         onUpdateColumnValue: handleUpdateColumnValue,
         onDeleteJob: handleDeleteJob,
@@ -114,7 +67,6 @@ export const useJobsTable = ({ filters }: UseJobsTableProps) => {
       }),
     [
       columns,
-      stages,
       handleUpdateJob,
       handleUpdateColumnValue,
       handleDeleteJob,
@@ -122,22 +74,80 @@ export const useJobsTable = ({ filters }: UseJobsTableProps) => {
     ]
   );
 
+  // Column ordering
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor)
+  );
+
+  const [columnOrder, setColumnOrder] = useState<string[]>([]);
+
+  const currentColumnIds = useMemo(
+    () => tableColumns.map((col) => col.id as string),
+    [tableColumns]
+  );
+
+  useEffect(() => {
+    if (currentColumnIds.length === 0) return;
+
+    setColumnOrder((prevOrder) => {
+      const existingOrder = prevOrder.filter((id) =>
+        currentColumnIds.includes(id)
+      );
+      const newColumns = currentColumnIds.filter(
+        (id) => !prevOrder.includes(id)
+      );
+
+      if (
+        newColumns.length === 0 &&
+        existingOrder.length === prevOrder.length
+      ) {
+        return prevOrder;
+      }
+
+      return [...existingOrder, ...newColumns];
+    });
+  }, [currentColumnIds]);
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setColumnOrder((current) => {
+        const oldIndex = current.indexOf(active.id as string);
+        const newIndex = current.indexOf(over.id as string);
+
+        return arrayMove(current, oldIndex, newIndex);
+      });
+    }
+  }, []);
+
+  // Table instance
   const table = useReactTable({
     data: jobs,
     columns: tableColumns,
+    state: { columnOrder },
     getCoreRowModel: getCoreRowModel(),
+    onColumnOrderChange: setColumnOrder,
   });
 
   return {
     jobs,
+    sensors,
     isLoading,
-    isFetchingNextPage,
+    columnOrder,
     tableContainerRef,
-    virtualRows: virtualizer.getVirtualItems(),
+    isFetchingNextPage,
+    rows: table.getRowModel().rows,
     totalSize: virtualizer.getTotalSize(),
     headerGroups: table.getHeaderGroups(),
-    rows: table.getRowModel().rows,
+    virtualRows: virtualizer.getVirtualItems(),
     handleScroll,
+    handleDragEnd,
     handleOpenDetail,
   };
 };
