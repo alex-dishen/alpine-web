@@ -3,23 +3,12 @@ import {
   Hash,
   Link,
   List,
-  Trash2,
   AlignLeft,
   CheckSquare,
-  ExternalLink,
   CalendarIcon,
-  MoreHorizontal,
   CircleChevronDown,
 } from 'lucide-react';
-import { Button } from '@/shared/shadcn/components/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/shared/shadcn/components/dropdown-menu';
-import type { JobApplicationWithStage } from '@/pages/jobs/registry/jobs.types';
+import type { JobApplicationWithStage, JobColumn } from '@/pages/jobs/registry/jobs.types';
 import { TextCell } from '@/pages/jobs/features/jobs-table/ui/text-cell';
 import { DateCell } from '@/pages/jobs/features/jobs-table/ui/date-cell';
 import { UrlCell } from '@/pages/jobs/features/jobs-table/ui/url-cell';
@@ -31,24 +20,63 @@ import { formatColumnValue, getColumnSize } from './jobs-table-columns.helper';
 import type {
   CreateColumnOptions,
   CreateColumnsOptions,
+  ColumnHeaderCallbacks,
 } from './jobs-table-columns.factory.types';
+
+export type ColumnMeta = {
+  column: JobColumn;
+  icon: React.ComponentType<{ className?: string }>;
+  callbacks?: ColumnHeaderCallbacks;
+};
+
+export const getIconForColumnType = (columnType: string) => {
+  switch (columnType) {
+    case 'text':
+      return AlignLeft;
+    case 'number':
+      return Hash;
+    case 'date':
+      return CalendarIcon;
+    case 'url':
+      return Link;
+    case 'checkbox':
+      return CheckSquare;
+    case 'select':
+      return CircleChevronDown;
+    case 'multi_select':
+      return List;
+    default:
+      return AlignLeft;
+  }
+};
 
 const createColumn = ({
   column,
   getValue,
   onChange,
+  columnHeaderCallbacks,
 }: CreateColumnOptions): ColumnDef<JobApplicationWithStage> => {
+  const icon = getIconForColumnType(column.column_type);
+
   const baseColumn: Partial<ColumnDef<JobApplicationWithStage>> = {
     id: column.id,
     accessorKey: column.field_key ?? undefined,
     size: getColumnSize(column.field_key),
+    meta: {
+      column,
+      icon,
+      callbacks: columnHeaderCallbacks,
+    } as ColumnMeta,
   };
+
+  // Simple header - DraggableHeader will wrap with dropdown
+  const renderHeader = () => <ColumnHeader icon={icon} name={column.name} />;
 
   switch (column.column_type) {
     case 'text':
       return {
         ...baseColumn,
-        header: () => <ColumnHeader icon={AlignLeft} name={column.name} />,
+        header: renderHeader,
         cell: ({ row }) => (
           <TextCell
             value={(getValue(row.original) as string) ?? ''}
@@ -60,7 +88,7 @@ const createColumn = ({
     case 'number':
       return {
         ...baseColumn,
-        header: () => <ColumnHeader icon={Hash} name={column.name} />,
+        header: renderHeader,
         cell: ({ row }) => {
           const value = getValue(row.original);
 
@@ -76,7 +104,7 @@ const createColumn = ({
     case 'date':
       return {
         ...baseColumn,
-        header: () => <ColumnHeader icon={CalendarIcon} name={column.name} />,
+        header: renderHeader,
         cell: ({ row }) => (
           <DateCell
             value={(getValue(row.original) as string) ?? null}
@@ -88,7 +116,7 @@ const createColumn = ({
     case 'url':
       return {
         ...baseColumn,
-        header: () => <ColumnHeader icon={Link} name={column.name} />,
+        header: renderHeader,
         cell: ({ row }) => (
           <UrlCell
             value={(getValue(row.original) as string) ?? null}
@@ -100,7 +128,7 @@ const createColumn = ({
     case 'checkbox':
       return {
         ...baseColumn,
-        header: () => <ColumnHeader icon={CheckSquare} name={column.name} />,
+        header: renderHeader,
         size: 80,
         cell: ({ row }) => (
           <CheckboxCell
@@ -113,9 +141,7 @@ const createColumn = ({
     case 'select':
       return {
         ...baseColumn,
-        header: () => (
-          <ColumnHeader icon={CircleChevronDown} name={column.name} />
-        ),
+        header: renderHeader,
         cell: ({ row }) => (
           <SelectCell
             value={(getValue(row.original) as string) ?? null}
@@ -134,7 +160,7 @@ const createColumn = ({
     case 'multi_select':
       return {
         ...baseColumn,
-        header: () => <ColumnHeader icon={List} name={column.name} />,
+        header: renderHeader,
         cell: ({ row }) => (
           <MultiSelectCell
             values={(getValue(row.original) as string[]) ?? []}
@@ -153,7 +179,7 @@ const createColumn = ({
     default:
       return {
         ...baseColumn,
-        header: () => <ColumnHeader icon={AlignLeft} name={column.name} />,
+        header: renderHeader,
         cell: () => <span className="text-muted-foreground">-</span>,
       } as ColumnDef<JobApplicationWithStage>;
   }
@@ -163,8 +189,7 @@ export const createJobColumns = ({
   columns,
   onUpdateJob,
   onUpdateColumnValue,
-  onDeleteJob,
-  onOpenDetail,
+  columnHeaderCallbacks,
 }: CreateColumnsOptions): ColumnDef<JobApplicationWithStage>[] => {
   const tableColumns: ColumnDef<JobApplicationWithStage>[] = columns.map(
     (col) => {
@@ -176,6 +201,7 @@ export const createJobColumns = ({
           column: col,
           getValue: (row) => row[fieldKey],
           onChange: (jobId, value) => onUpdateJob(jobId, col.field_key!, value),
+          columnHeaderCallbacks,
         });
       }
 
@@ -185,40 +211,10 @@ export const createJobColumns = ({
         getValue: () => null, // Custom columns get values from column_values (not yet loaded)
         onChange: (jobId, value) =>
           onUpdateColumnValue(jobId, col.id, formatColumnValue(col, value)),
+        columnHeaderCallbacks,
       });
     }
   );
-
-  // Actions column (always last)
-  tableColumns.push({
-    id: 'actions',
-    header: '',
-    size: 50,
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8">
-            <MoreHorizontal className="size-4" />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => onOpenDetail(row.original.id)}>
-            <ExternalLink className="mr-2 size-4" />
-            View Details
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-destructive"
-            onClick={() => onDeleteJob(row.original.id)}
-          >
-            <Trash2 className="mr-2 size-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  });
 
   return tableColumns;
 };

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   CircleCheckIcon,
   InfoIcon,
@@ -6,17 +7,35 @@ import {
   TriangleAlertIcon,
 } from 'lucide-react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
-import { useThemeStore } from '@/configs/zustand/theme/theme.store';
+
+/**
+ * Get the current theme from document class.
+ * Falls back to system preference if no class is set.
+ */
+const getThemeFromDocument = (): 'light' | 'dark' => {
+  const root = window.document.documentElement;
+  if (root.classList.contains('dark')) return 'dark';
+  if (root.classList.contains('light')) return 'light';
+  // Fallback to system preference
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const theme = useThemeStore((state) => state.theme);
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => getThemeFromDocument());
 
-  const resolvedTheme =
-    theme === 'system'
-      ? window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-      : theme;
+  useEffect(() => {
+    // Watch for class changes on document element
+    const observer = new MutationObserver(() => {
+      setResolvedTheme(getThemeFromDocument());
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <Sonner

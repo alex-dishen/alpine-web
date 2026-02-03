@@ -29,14 +29,6 @@ export type JobColumnType =
 export type InterviewOutcome =
   components['schemas']['JobInterviewResponseDto']['outcome'];
 
-// Filters for API calls
-export interface JobFilters {
-  search?: string;
-  stage_id?: string;
-  category?: JobStageCategory;
-  is_archived?: boolean;
-}
-
 // Zod schemas for form validation
 export const createJobSchema = z.object({
   company_name: z.string().min(1, 'Company name is required'),

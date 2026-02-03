@@ -690,11 +690,21 @@ export interface components {
             category?: "initial" | "interview" | "positive" | "negative";
             is_archived?: boolean;
         };
+        ColumnFilterDto: {
+            column_id: string;
+            /** @enum {string} */
+            operator: "contains" | "not_contains" | "equals" | "not_equals" | "starts_with" | "ends_with" | "is_empty" | "is_not_empty" | "gt" | "lt" | "gte" | "lte" | "between" | "is_true" | "is_false" | "is_any_of" | "is_none_of";
+            value?: Record<string, never>;
+            /** @enum {string} */
+            column_type?: "text" | "number" | "date" | "url" | "checkbox" | "select" | "multi_select";
+        };
         JobSortDto: {
             /** @enum {string} */
-            sort_by: "stage" | "category" | "is_archived";
+            sort_by: "stage" | "category" | "is_archived" | "company_name" | "job_title" | "applied_at" | "salary_min" | "salary_max" | "created_at" | "custom_column";
             /** @enum {string} */
             order: "asc" | "desc";
+            /** Format: uuid */
+            column_id?: string;
         };
         CursorPaginationRequestDto: {
             take: number;
@@ -702,6 +712,7 @@ export interface components {
         };
         JobFiltersDto: {
             filters?: components["schemas"]["JobFiltersBaseDto"];
+            column_filters?: components["schemas"]["ColumnFilterDto"][];
             sort?: components["schemas"]["JobSortDto"];
             pagination: components["schemas"]["CursorPaginationRequestDto"];
         };

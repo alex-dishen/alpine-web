@@ -7,10 +7,14 @@ import {
 import { AppSidebar } from '@/features/sidebar/sidebar';
 import { Separator } from '@/shared/shadcn/components/separator';
 import { restoreSession } from '@/configs/auth/session';
+import { PreferencesProvider } from '@/features/preferences/preferences-provider';
+import { useSidebarPreference } from '@/features/preferences/model/use-sidebar-preference';
 
-const AuthenticatedLayout = () => {
+const AuthenticatedLayoutContent = () => {
+  const { sidebarOpen, setSidebarOpen } = useSidebarPreference();
+
   return (
-    <SidebarProvider>
+    <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
@@ -22,6 +26,14 @@ const AuthenticatedLayout = () => {
         </main>
       </SidebarInset>
     </SidebarProvider>
+  );
+};
+
+const AuthenticatedLayout = () => {
+  return (
+    <PreferencesProvider>
+      <AuthenticatedLayoutContent />
+    </PreferencesProvider>
   );
 };
 

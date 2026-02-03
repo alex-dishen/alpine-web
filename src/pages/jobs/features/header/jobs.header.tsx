@@ -5,15 +5,17 @@ import { Badge } from '@/shared/shadcn/components/badge';
 import { $api } from '@/configs/api/client';
 import { useModalsStore } from '@/configs/zustand/modals/modals.store';
 import { MODALS } from '@/configs/zustand/modals/modals.constants';
+import { useJobsPreferences } from '@/features/preferences/model/use-jobs-preferences';
 
-type JobsHeaderProps = {
-  search: string;
-  onSearchChange: (search: string) => void;
-};
-
-export const JobsHeader = ({ search, onSearchChange }: JobsHeaderProps) => {
+export const JobsHeader = () => {
   const openModal = useModalsStore((state) => state.openModal);
   const { data: countData } = $api.useQuery('get', '/api/jobs/count');
+
+  const { search, setSearch } = useJobsPreferences();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
 
   return (
     <div className="mb-6 space-y-4">
@@ -60,7 +62,7 @@ export const JobsHeader = ({ search, onSearchChange }: JobsHeaderProps) => {
           <Input
             placeholder="Search jobs by company, position, or location..."
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-9"
           />
         </div>
