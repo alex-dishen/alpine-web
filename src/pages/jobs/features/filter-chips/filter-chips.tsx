@@ -1,4 +1,4 @@
-import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import { useJobsTableStore } from '@/configs/zustand/jobs-table/jobs-table.store';
 import { FilterChip } from '@/pages/jobs/features/filter-chips/filter-chip';
 import type { JobColumn } from '@/pages/jobs/registry/jobs.types';
 
@@ -7,7 +7,7 @@ type FilterChipsProps = {
 };
 
 export const FilterChips = ({ columns }: FilterChipsProps) => {
-  const filters = useJobsFiltersStore((state) => state.filters);
+  const filters = useJobsTableStore((state) => state.filters);
 
   if (filters.length === 0) {
     return null;

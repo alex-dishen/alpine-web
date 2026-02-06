@@ -1,5 +1,5 @@
 import { startOfDay, endOfDay, parseISO, isValid } from 'date-fns';
-import type { ColumnFilter } from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+import type { ColumnFilter } from '@/configs/zustand/jobs-table/jobs-table.helpers';
 import type { components } from '@/configs/api/types/api.generated';
 import { COLUMN_TYPES, FILTER_OPERATORS } from '@/configs/api/types/api.enums';
 

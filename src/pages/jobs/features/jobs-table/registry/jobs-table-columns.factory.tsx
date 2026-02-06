@@ -29,6 +29,8 @@ const createColumn = ({
     id: column.id,
     accessorKey: column.field_key ?? undefined,
     size: 150,
+    minSize: 80,
+    maxSize: 600,
     meta: {
       column,
       icon,
@@ -97,6 +99,8 @@ const createColumn = ({
         ...baseColumn,
         header: renderHeader,
         size: 80,
+        minSize: 50,
+        maxSize: 120,
         cell: ({ row }) => (
           <CheckboxCell
             value={Boolean(getValue(row.original))}

@@ -1,17 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { ColumnSizingState } from '@tanstack/react-table';
 import { FILTER_OPERATORS } from '@/configs/api/types/api.enums';
 import {
   getDefaultFilterByColumnType,
   type ColumnFilter,
   type Sort,
-} from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+} from '@/configs/zustand/jobs-table/jobs-table.helpers';
 
-type JobsFiltersState = {
+type JobsTableState = {
   // Persisted state
   search: string;
   filters: ColumnFilter[];
   sort: Sort | null;
+  columnSizing: ColumnSizingState;
 
   // Non-persisted state (filter dropdown)
   openFilterColumnId: string | null;
@@ -27,6 +29,11 @@ type JobsFiltersState = {
   setSort: (sort: Sort | null) => void;
   clearSort: () => void;
   clearAll: () => void;
+  setColumnSizing: (
+    updater:
+      | ColumnSizingState
+      | ((prev: ColumnSizingState) => ColumnSizingState)
+  ) => void;
 
   // Non-persisted actions (filter dropdown)
   openFilter: (columnId: string) => void;
@@ -35,13 +42,14 @@ type JobsFiltersState = {
   canCloseFilter: () => boolean;
 };
 
-export const useJobsFiltersStore = create<JobsFiltersState>()(
+export const useJobsTableStore = create<JobsTableState>()(
   persist(
     (set, get) => ({
       // Persisted state
       search: '',
       filters: [],
       sort: null,
+      columnSizing: {},
 
       // Non-persisted state
       openFilterColumnId: null,
@@ -113,6 +121,13 @@ export const useJobsFiltersStore = create<JobsFiltersState>()(
         set({ search: '', filters: resetFilters, sort: null });
       },
 
+      setColumnSizing: (updater) => {
+        const { columnSizing } = get();
+        const next =
+          typeof updater === 'function' ? updater(columnSizing) : updater;
+        set({ columnSizing: next });
+      },
+
       // Filter dropdown actions (non-persisted)
       openFilter: (columnId) => {
         // Delay to let column header dropdown close first
@@ -132,6 +147,7 @@ export const useJobsFiltersStore = create<JobsFiltersState>()(
         search: state.search,
         filters: state.filters,
         sort: state.sort,
+        columnSizing: state.columnSizing,
       }),
     }
   )

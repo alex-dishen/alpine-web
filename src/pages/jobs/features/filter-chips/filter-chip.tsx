@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/shadcn/components/dropdown-menu';
 import { cn } from '@/shared/shadcn/utils/utils';
-import type { ColumnFilter } from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+import type { ColumnFilter } from '@/configs/zustand/jobs-table/jobs-table.helpers';
 import { useFilterChip } from '@/pages/jobs/features/filter-chips/model/use-filter-chip';
 import { getFilterValueInput } from '@/pages/jobs/features/filter-chips/registry/filter-value-input.factory';
 import type { JobColumn } from '@/pages/jobs/registry/jobs.types';

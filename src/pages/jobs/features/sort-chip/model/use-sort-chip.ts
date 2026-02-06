@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { JobColumn } from '@/pages/jobs/registry/jobs.types';
-import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import { useJobsTableStore } from '@/configs/zustand/jobs-table/jobs-table.store';
 
 type UseSortChipProps = {
   columns: JobColumn[];
@@ -9,9 +9,9 @@ type UseSortChipProps = {
 export const useSortChip = ({ columns }: UseSortChipProps) => {
   const [open, setOpen] = useState(false);
 
-  const sort = useJobsFiltersStore((state) => state.sort);
-  const setSort = useJobsFiltersStore((state) => state.setSort);
-  const clearSort = useJobsFiltersStore((state) => state.clearSort);
+  const sort = useJobsTableStore((state) => state.sort);
+  const setSort = useJobsTableStore((state) => state.setSort);
+  const clearSort = useJobsTableStore((state) => state.clearSort);
 
   const handleUpdateSort = (field: 'columnId' | 'direction', value: string) => {
     if (field === 'columnId') {

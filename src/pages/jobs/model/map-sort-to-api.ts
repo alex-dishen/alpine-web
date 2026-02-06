@@ -1,4 +1,4 @@
-import type { Sort } from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+import type { Sort } from '@/configs/zustand/jobs-table/jobs-table.helpers';
 import type { components } from '@/configs/api/types/api.generated';
 import type { JobColumn } from '@/pages/jobs/registry/jobs.types';
 

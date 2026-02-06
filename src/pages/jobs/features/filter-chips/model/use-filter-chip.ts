@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import { useJobsTableStore } from '@/configs/zustand/jobs-table/jobs-table.store';
 import {
   getDefaultFilterByColumnType,
   type ColumnFilter,
-} from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+} from '@/configs/zustand/jobs-table/jobs-table.helpers';
 import {
   COLUMN_TYPES,
   FILTER_OPERATORS,
@@ -30,15 +30,15 @@ export const useFilterChip = ({ filter, columns }: UseFilterChipProps) => {
   const isBetweenOperator = filter.operator === FILTER_OPERATORS.BETWEEN;
 
   // Subscribe to filter dropdown state
-  const open = useJobsFiltersStore(
+  const open = useJobsTableStore(
     (s) => s.openFilterColumnId === filter.columnId
   );
-  const setFilterOpen = useJobsFiltersStore((s) => s.setFilterOpen);
-  const canCloseFilter = useJobsFiltersStore((s) => s.canCloseFilter);
+  const setFilterOpen = useJobsTableStore((s) => s.setFilterOpen);
+  const canCloseFilter = useJobsTableStore((s) => s.canCloseFilter);
 
   // Get filter actions from store
-  const updateFilter = useJobsFiltersStore((state) => state.updateFilter);
-  const removeFilter = useJobsFiltersStore((state) => state.removeFilter);
+  const updateFilter = useJobsTableStore((state) => state.updateFilter);
+  const removeFilter = useJobsTableStore((state) => state.removeFilter);
 
   const handleOpenChange = useCallback(
     (newOpen: boolean) => setFilterOpen(filter.columnId, newOpen),

@@ -92,6 +92,7 @@ export const useDraggableHeader = (
     icon,
     style,
     column,
+    header,
     listeners,
     attributes,
     isDragging,

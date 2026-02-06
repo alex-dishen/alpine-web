@@ -25,6 +25,7 @@ export const DraggableHeader = ({ header }: DraggableHeaderProps) => {
     dropdownOpen,
     hasActiveSort,
     hasActiveFilter,
+    header: headerInstance,
     setNodeRef,
     handleSort,
     handleFilter,
@@ -42,7 +43,7 @@ export const DraggableHeader = ({ header }: DraggableHeaderProps) => {
           ref={setNodeRef}
           style={style}
           className={cn(
-            'hover:bg-muted/50 cursor-pointer rounded-t-sm transition-colors outline-none',
+            'group/header hover:bg-muted/50 relative cursor-pointer rounded-t-sm transition-colors outline-none',
             isDragging && 'bg-muted/50 z-10 cursor-grabbing'
           )}
           onPointerDown={(e) => {
@@ -60,6 +61,24 @@ export const DraggableHeader = ({ header }: DraggableHeaderProps) => {
               hasSortIndicator={hasActiveSort}
             />
           )}
+          <div
+            onMouseDown={headerInstance.getResizeHandler()}
+            onTouchStart={headerInstance.getResizeHandler()}
+            onDoubleClick={() => headerInstance.column.resetSize()}
+            onPointerDown={(e) => e.stopPropagation()}
+            className={cn(
+              'group/resize absolute top-0 right-0 flex h-full w-2 cursor-col-resize touch-none items-center select-none',
+              'opacity-0 hover:opacity-100',
+              headerInstance.column.getIsResizing() && 'opacity-100'
+            )}
+          >
+            <div
+              className={cn(
+                'bg-border group-hover/resize:bg-primary ml-auto h-3/5 w-px rounded-full group-hover/resize:w-0.5',
+                headerInstance.column.getIsResizing() && 'bg-primary w-0.5'
+              )}
+            />
+          </div>
         </TableHead>
       </DropdownMenuTrigger>
       <ColumnHeaderDropdownContent

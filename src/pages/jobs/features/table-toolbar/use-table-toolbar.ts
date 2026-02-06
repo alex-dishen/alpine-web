@@ -1,14 +1,14 @@
-import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
-import { getDefaultFilterByColumnType } from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+import { useJobsTableStore } from '@/configs/zustand/jobs-table/jobs-table.store';
+import { getDefaultFilterByColumnType } from '@/configs/zustand/jobs-table/jobs-table.helpers';
 import { type ColumnType } from '@/configs/api/types/api.enums';
 import { $api } from '@/configs/api/client';
 
 export const useTableToolbar = () => {
-  const sort = useJobsFiltersStore((state) => state.sort);
-  const filters = useJobsFiltersStore((state) => state.filters);
-  const addFilter = useJobsFiltersStore((state) => state.addFilter);
-  const clearAll = useJobsFiltersStore((state) => state.clearAll);
-  const openFilter = useJobsFiltersStore((s) => s.openFilter);
+  const sort = useJobsTableStore((state) => state.sort);
+  const filters = useJobsTableStore((state) => state.filters);
+  const addFilter = useJobsTableStore((state) => state.addFilter);
+  const clearAll = useJobsTableStore((state) => state.clearAll);
+  const openFilter = useJobsTableStore((s) => s.openFilter);
 
   const hasActiveSortOrFilters = sort !== null || filters.length > 0;
 

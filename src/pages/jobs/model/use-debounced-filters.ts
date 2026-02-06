@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { debounce } from '@/shared/utils/debounce';
-import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import { useJobsTableStore } from '@/configs/zustand/jobs-table/jobs-table.store';
 import {
   isFilterActive,
   type ColumnFilter,
-} from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+} from '@/configs/zustand/jobs-table/jobs-table.helpers';
 
 const DEBOUNCE_MS = 400;
 
@@ -14,10 +14,10 @@ const DEBOUNCE_MS = 400;
  */
 export const useDebouncedFilters = () => {
   const [debouncedSearch, setDebouncedSearch] = useState(
-    () => useJobsFiltersStore.getState().search
+    () => useJobsTableStore.getState().search
   );
   const [debouncedFilters, setDebouncedFilters] = useState<ColumnFilter[]>(() =>
-    useJobsFiltersStore.getState().filters.filter(isFilterActive)
+    useJobsTableStore.getState().filters.filter(isFilterActive)
   );
 
   const debouncedSetSearch = useMemo(
@@ -41,7 +41,7 @@ export const useDebouncedFilters = () => {
   );
 
   useEffect(() => {
-    const unsubscribe = useJobsFiltersStore.subscribe((state, prevState) => {
+    const unsubscribe = useJobsTableStore.subscribe((state, prevState) => {
       if (state.search !== prevState.search) {
         debouncedSetSearch(state.search);
       }

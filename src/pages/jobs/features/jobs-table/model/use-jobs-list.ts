@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchClient, $api } from '@/configs/api/client';
 import { getJobsListQueryKey } from '@/configs/api/query-keys';
-import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import { useJobsTableStore } from '@/configs/zustand/jobs-table/jobs-table.store';
 import { useDebouncedFilters } from '@/pages/jobs/model/use-debounced-filters';
 import { mapFiltersToApi } from '@/pages/jobs/model/map-filters-to-api';
 import { mapSortToApi } from '@/pages/jobs/model/map-sort-to-api';
 
 export const useJobsList = () => {
   const { debouncedSearch, debouncedFilters } = useDebouncedFilters();
-  const sort = useJobsFiltersStore((state) => state.sort);
+  const sort = useJobsTableStore((state) => state.sort);
 
   const { data: columns = [] } = $api.useQuery('get', '/api/jobs/columns');
 

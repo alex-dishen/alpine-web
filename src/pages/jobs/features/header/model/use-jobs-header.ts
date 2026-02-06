@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { $api } from '@/configs/api/client';
 import { useModalsStore } from '@/configs/zustand/modals/modals.store';
 import { MODALS } from '@/configs/zustand/modals/modals.constants';
-import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import { useJobsTableStore } from '@/configs/zustand/jobs-table/jobs-table.store';
 import { useDebouncedFilters } from '@/pages/jobs/model/use-debounced-filters';
 import { mapFiltersToApi } from '@/pages/jobs/model/map-filters-to-api';
 
@@ -24,8 +24,8 @@ export const useJobsHeader = () => {
     },
   });
 
-  const search = useJobsFiltersStore((state) => state.search);
-  const setSearch = useJobsFiltersStore((state) => state.setSearch);
+  const search = useJobsTableStore((state) => state.search);
+  const setSearch = useJobsTableStore((state) => state.setSearch);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);

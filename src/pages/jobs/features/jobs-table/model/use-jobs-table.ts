@@ -5,11 +5,11 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { createJobColumns } from '@/pages/jobs/features/jobs-table/registry/jobs-table-columns.factory';
 import { useJobsData } from '@/pages/jobs/features/jobs-table/model/use-jobs-data';
 import type { ColumnHeaderCallbacks } from '@/pages/jobs/features/jobs-table/registry/jobs-table-columns.factory.types';
-import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import { useJobsTableStore } from '@/configs/zustand/jobs-table/jobs-table.store';
 import {
   getDefaultFilterByColumnType,
   isFilterActive,
-} from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+} from '@/configs/zustand/jobs-table/jobs-table.helpers';
 import { type ColumnType } from '@/configs/api/types/api.enums';
 import {
   KeyboardSensor,
@@ -23,9 +23,13 @@ export const useJobsTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
   // Get filter actions from store (only actions, not state - to avoid re-renders)
-  const setSort = useJobsFiltersStore((state) => state.setSort);
-  const addFilter = useJobsFiltersStore((state) => state.addFilter);
-  const openFilter = useJobsFiltersStore((s) => s.openFilter);
+  const setSort = useJobsTableStore((state) => state.setSort);
+  const addFilter = useJobsTableStore((state) => state.addFilter);
+  const openFilter = useJobsTableStore((s) => s.openFilter);
+
+  // Column sizing (persisted in store)
+  const columnSizing = useJobsTableStore((state) => state.columnSizing);
+  const setColumnSizing = useJobsTableStore((state) => state.setColumnSizing);
 
   // Get business data - useJobsData -> useJobsList subscribes to filters internally
   const {
@@ -95,12 +99,12 @@ export const useJobsTable = () => {
       },
       getHasActiveSort: (columnId) => {
         // Read current state without subscribing to avoid re-renders
-        const { sort } = useJobsFiltersStore.getState();
+        const { sort } = useJobsTableStore.getState();
 
         return sort?.columnId === columnId;
       },
       getHasActiveFilter: (columnId) => {
-        const { filters } = useJobsFiltersStore.getState();
+        const { filters } = useJobsTableStore.getState();
         const filter = filters.find((f) => f.columnId === columnId);
 
         if (!filter) return false;
@@ -180,13 +184,15 @@ export const useJobsTable = () => {
   const table = useReactTable({
     data: jobs,
     columns: tableColumns,
-    state: { columnOrder },
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
+    state: { columnOrder, columnSizing },
     getCoreRowModel: getCoreRowModel(),
     onColumnOrderChange: setColumnOrder,
+    onColumnSizingChange: setColumnSizing,
   });
 
   return {
-    jobs,
     sensors,
     isLoading,
     columnOrder,
@@ -194,8 +200,10 @@ export const useJobsTable = () => {
     isFetchingNextPage,
     rows: table.getRowModel().rows,
     totalSize: virtualizer.getTotalSize(),
+    centerTotalSize: table.getCenterTotalSize(),
     headerGroups: table.getHeaderGroups(),
     virtualRows: virtualizer.getVirtualItems(),
+    isResizing: !!table.getState().columnSizingInfo.isResizingColumn,
     handleScroll,
     handleDragEnd,
     handleOpenDetail,
