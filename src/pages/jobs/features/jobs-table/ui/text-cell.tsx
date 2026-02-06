@@ -5,6 +5,7 @@ import { cn } from '@/shared/shadcn/utils/utils';
 type TextCellProps = {
   value: string;
   onChange: (value: string) => void;
+  type?: 'text' | 'number';
   placeholder?: string;
   className?: string;
 };
@@ -12,12 +13,18 @@ type TextCellProps = {
 export const TextCell = ({
   value,
   onChange,
+  type = 'text',
   placeholder = 'Empty',
   className,
 }: TextCellProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
+  const [displayValue, setDisplayValue] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setDisplayValue(value);
+  }, [value]);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -27,7 +34,7 @@ export const TextCell = ({
   }, [isEditing]);
 
   const handleStartEditing = () => {
-    setEditValue(value);
+    setEditValue(displayValue);
     setIsEditing(true);
   };
 
@@ -35,6 +42,7 @@ export const TextCell = ({
     setIsEditing(false);
 
     if (editValue !== value) {
+      setDisplayValue(editValue);
       onChange(editValue);
     }
   };
@@ -53,8 +61,17 @@ export const TextCell = ({
     return (
       <Input
         ref={inputRef}
+        inputMode={type === 'number' ? 'numeric' : undefined}
         value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
+        onChange={(e) => {
+          if (
+            type === 'number' &&
+            e.target.value &&
+            !/^\d*$/.test(e.target.value)
+          )
+            return;
+          setEditValue(e.target.value);
+        }}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         className={cn('h-8 w-full', className)}
@@ -67,11 +84,11 @@ export const TextCell = ({
       onClick={handleStartEditing}
       className={cn(
         'hover:bg-muted/50 flex min-h-[36px] w-full cursor-text items-center truncate px-2',
-        !value && 'text-muted-foreground',
+        !displayValue && 'text-muted-foreground',
         className
       )}
     >
-      {value || placeholder}
+      {displayValue || placeholder}
     </div>
   );
 };

@@ -5,6 +5,57 @@ import type { JobApplicationWithStage } from '@/pages/jobs/registry/jobs.types';
 
 type MutationContext = { previousJobs: unknown };
 
+const buildOptimisticColumnValues = (
+  existing: JobApplicationWithStage['column_values'],
+  columnId: string,
+  body: Record<string, unknown>
+): JobApplicationWithStage['column_values'] => {
+  // Remove existing values for this column
+  const filtered = existing.filter((cv) => cv.column_id !== columnId);
+
+  // Build new placeholder value(s)
+  if ('option_ids' in body) {
+    const optionIds = (body.option_ids as string[]) ?? [];
+
+    return [
+      ...filtered,
+      ...optionIds.map((optionId) => ({
+        column_id: columnId,
+        option_id: optionId,
+        value: null,
+      })),
+    ];
+  }
+
+  if ('option_id' in body) {
+    if (body.option_id === null) return filtered;
+
+    return [
+      ...filtered,
+      {
+        column_id: columnId,
+        option_id: body.option_id as string,
+        value: null,
+      },
+    ];
+  }
+
+  if ('text_value' in body) {
+    if (body.text_value === null) return filtered;
+
+    return [
+      ...filtered,
+      {
+        column_id: columnId,
+        option_id: null,
+        value: body.text_value as string,
+      },
+    ];
+  }
+
+  return filtered;
+};
+
 export const useUpsertColumnValue = () => {
   const queryClient = useQueryClient();
 
@@ -14,8 +65,9 @@ export const useUpsertColumnValue = () => {
 
       const previousJobs = queryClient.getQueryData(['jobs']);
       const jobId = variables.params.path.jobId;
+      const columnId = variables.params.path.columnId;
+      const body = variables.body as Record<string, unknown>;
 
-      // Optimistic update
       queryClient.setQueriesData(
         { queryKey: JOBS_QUERY_KEY },
         (old: unknown) => {
@@ -34,8 +86,14 @@ export const useUpsertColumnValue = () => {
               data: page.data.map((job) => {
                 if (job.id !== jobId) return job;
 
-                // Note: The optimistic update is simplified since we don't have full column_values in the list response
-                return job;
+                return {
+                  ...job,
+                  column_values: buildOptimisticColumnValues(
+                    job.column_values,
+                    columnId,
+                    body
+                  ),
+                };
               }),
             })),
           };
@@ -50,6 +108,9 @@ export const useUpsertColumnValue = () => {
       if (ctx?.previousJobs) {
         queryClient.setQueryData(JOBS_QUERY_KEY, ctx.previousJobs);
       }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: JOBS_QUERY_KEY });
     },
   });
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/shared/shadcn/components/button';
 import { Calendar } from '@/shared/shadcn/components/calendar';
@@ -23,16 +23,24 @@ export const DateCell = ({
   className,
 }: DateCellProps) => {
   const [open, setOpen] = useState(false);
+  const [localValue, setLocalValue] = useState(value);
 
-  const date = value ? new Date(value) : undefined;
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const date = localValue ? new Date(localValue) : undefined;
 
   const handleSelect = (newDate: Date | undefined) => {
-    onChange(newDate ? newDate.toISOString() : null);
+    const newValue = newDate ? newDate.toISOString() : null;
+    setLocalValue(newValue);
+    onChange(newValue);
     setOpen(false);
   };
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setLocalValue(null);
     onChange(null);
     setOpen(false);
   };
@@ -44,7 +52,7 @@ export const DateCell = ({
           variant="ghost"
           className={cn(
             'min-h-[32px] w-full cursor-pointer justify-start rounded-none px-2 font-normal',
-            !value && 'text-muted-foreground',
+            !localValue && 'text-muted-foreground',
             className
           )}
         >
@@ -58,7 +66,7 @@ export const DateCell = ({
           onSelect={handleSelect}
           initialFocus
         />
-        {value && (
+        {localValue && (
           <div className="border-t p-2">
             <Button
               variant="ghost"

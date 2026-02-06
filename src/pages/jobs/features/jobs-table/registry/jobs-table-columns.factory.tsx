@@ -10,6 +10,7 @@ import { MultiSelectCell } from '@/pages/jobs/features/jobs-table/ui/multi-selec
 import { ColumnHeader } from '../ui/column-header';
 import {
   formatColumnValue,
+  getCustomColumnValue,
   getIconForColumnType,
 } from './jobs-table-columns.helper';
 import type {
@@ -63,6 +64,7 @@ const createColumn = ({
 
           return (
             <TextCell
+              type="number"
               value={value != null ? String(value) : ''}
               onChange={(v) => onChange(row.original.id, v ? Number(v) : null)}
             />
@@ -179,7 +181,7 @@ export const createJobColumns = ({
       // Working with columns created by user
       return createColumn({
         column: col,
-        getValue: () => null, // Custom columns get values from column_values (not yet loaded)
+        getValue: (row) => getCustomColumnValue(row, col),
         onChange: (jobId, value) =>
           onUpdateColumnValue(jobId, col.id, formatColumnValue(col, value)),
         columnHeaderCallbacks,

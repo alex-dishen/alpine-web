@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import { Button } from '@/shared/shadcn/components/button';
 import {
@@ -38,11 +38,18 @@ export const SelectCell = ({
   className,
 }: SelectCellProps) => {
   const [open, setOpen] = useState(false);
+  const [localValue, setLocalValue] = useState(value);
 
-  const selectedOption = options.find((opt) => opt.id === value);
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const selectedOption = options.find((opt) => opt.id === localValue);
 
   const handleSelect = (optionId: string) => {
-    onChange(optionId === value ? null : optionId);
+    const newValue = optionId === localValue ? null : optionId;
+    setLocalValue(newValue);
+    onChange(newValue);
     setOpen(false);
   };
 
@@ -55,7 +62,7 @@ export const SelectCell = ({
           aria-expanded={open}
           className={cn(
             'min-h-[32px] w-full cursor-pointer justify-between rounded-none px-2 font-normal',
-            !value && 'text-muted-foreground',
+            !localValue && 'text-muted-foreground',
             className
           )}
         >
@@ -89,7 +96,7 @@ export const SelectCell = ({
                   <Check
                     className={cn(
                       'mr-2 size-4',
-                      value === option.id ? 'opacity-100' : 'opacity-0'
+                      localValue === option.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                   {option.color && (

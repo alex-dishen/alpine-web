@@ -633,6 +633,13 @@ export interface components {
             /** Format: date-time */
             updated_at?: string | null;
         };
+        JobApplicationColumnValueResponseDto: {
+            /** Format: uuid */
+            column_id: string;
+            /** Format: uuid */
+            option_id?: string | null;
+            value?: string | null;
+        };
         JobApplicationWithStageResponseDto: {
             /** Format: uuid */
             id: string;
@@ -657,6 +664,7 @@ export interface components {
             /** Format: date-time */
             updated_at?: string | null;
             stage: components["schemas"]["JobStageResponseDto"];
+            column_values: components["schemas"]["JobApplicationColumnValueResponseDto"][];
         };
         ColumnFilterDto: {
             column_id: string;

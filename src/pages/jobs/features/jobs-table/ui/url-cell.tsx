@@ -18,7 +18,12 @@ export const UrlCell = ({
 }: UrlCellProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
+  const [localValue, setLocalValue] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -28,7 +33,7 @@ export const UrlCell = ({
   }, [isEditing]);
 
   const handleStartEditing = () => {
-    setEditValue(value ?? '');
+    setEditValue(localValue ?? '');
     setIsEditing(true);
   };
 
@@ -37,6 +42,7 @@ export const UrlCell = ({
     const newValue = editValue.trim() || null;
 
     if (newValue !== value) {
+      setLocalValue(newValue);
       onChange(newValue);
     }
   };
@@ -54,8 +60,8 @@ export const UrlCell = ({
   const handleLinkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    if (value) {
-      window.open(value, '_blank', 'noopener,noreferrer');
+    if (localValue) {
+      window.open(localValue, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -75,14 +81,14 @@ export const UrlCell = ({
   }
 
   // Extract domain for display
-  const displayValue = value
+  const displayLabel = localValue
     ? (() => {
         try {
-          const url = new URL(value);
+          const url = new URL(localValue);
 
           return url.hostname.replace('www.', '');
         } catch {
-          return value;
+          return localValue;
         }
       })()
     : null;
@@ -92,15 +98,15 @@ export const UrlCell = ({
       onClick={handleStartEditing}
       className={cn(
         'hover:bg-muted/50 flex min-h-[36px] w-full cursor-text items-center gap-2 truncate px-2',
-        !value && 'text-muted-foreground',
+        !localValue && 'text-muted-foreground',
         className
       )}
     >
-      {value ? (
+      {localValue ? (
         <>
-          <span className="truncate">{displayValue}</span>
+          <span className="truncate">{displayLabel}</span>
           <ExternalLink
-            className="text-muted-foreground hover:text-foreground size-4 shrink-0"
+            className="text-muted-foreground hover:text-foreground size-4 shrink-0 cursor-pointer"
             onClick={handleLinkClick}
           />
         </>

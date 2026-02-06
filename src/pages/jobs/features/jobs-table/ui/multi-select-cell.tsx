@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Check, X } from 'lucide-react';
 import { Button } from '@/shared/shadcn/components/button';
 import { Badge } from '@/shared/shadcn/components/badge';
@@ -39,19 +39,27 @@ export const MultiSelectCell = ({
   className,
 }: MultiSelectCellProps) => {
   const [open, setOpen] = useState(false);
+  const [localValues, setLocalValues] = useState(values);
 
-  const selectedOptions = options.filter((opt) => values.includes(opt.id));
+  useEffect(() => {
+    setLocalValues(values);
+  }, [values]);
+
+  const selectedOptions = options.filter((opt) => localValues.includes(opt.id));
 
   const handleSelect = (optionId: string) => {
-    const newValues = values.includes(optionId)
-      ? values.filter((v) => v !== optionId)
-      : [...values, optionId];
+    const newValues = localValues.includes(optionId)
+      ? localValues.filter((v) => v !== optionId)
+      : [...localValues, optionId];
+    setLocalValues(newValues);
     onChange(newValues);
   };
 
   const handleRemove = (e: React.MouseEvent, optionId: string) => {
     e.stopPropagation();
-    onChange(values.filter((v) => v !== optionId));
+    const newValues = localValues.filter((v) => v !== optionId);
+    setLocalValues(newValues);
+    onChange(newValues);
   };
 
   return (
@@ -63,7 +71,7 @@ export const MultiSelectCell = ({
           aria-expanded={open}
           className={cn(
             'h-auto min-h-[32px] w-full cursor-pointer justify-between rounded-none px-2 font-normal',
-            !values.length && 'text-muted-foreground',
+            !localValues.length && 'text-muted-foreground',
             className
           )}
         >
@@ -109,7 +117,9 @@ export const MultiSelectCell = ({
                   <Check
                     className={cn(
                       'mr-2 size-4',
-                      values.includes(option.id) ? 'opacity-100' : 'opacity-0'
+                      localValues.includes(option.id)
+                        ? 'opacity-100'
+                        : 'opacity-0'
                     )}
                   />
                   {option.color && (

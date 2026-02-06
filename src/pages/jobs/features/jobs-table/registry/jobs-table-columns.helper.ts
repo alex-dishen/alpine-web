@@ -1,5 +1,8 @@
 import { COLUMN_TYPES, type ColumnType } from '@/configs/api/types/api.enums';
-import type { JobColumn } from '@/pages/jobs/registry/jobs.types';
+import type {
+  JobApplicationWithStage,
+  JobColumn,
+} from '@/pages/jobs/registry/jobs.types';
 import {
   AlignLeft,
   CalendarIcon,
@@ -22,7 +25,7 @@ export const formatColumnValue = (
     case COLUMN_TYPES.CHECKBOX:
       return { text_value: value ? 'true' : 'false' };
     default:
-      return { text_value: value };
+      return { text_value: value != null ? String(value) : null };
   }
 };
 
@@ -44,5 +47,27 @@ export const getIconForColumnType = (columnType: ColumnType) => {
       return List;
     default:
       return AlignLeft;
+  }
+};
+
+export const getCustomColumnValue = (
+  row: JobApplicationWithStage,
+  column: JobColumn
+): unknown => {
+  const values = row.column_values?.filter((cv) => cv.column_id === column.id);
+
+  if (!values || values.length === 0) return null;
+
+  switch (column.column_type) {
+    case COLUMN_TYPES.SELECT:
+      return values[0].option_id ?? null;
+    case COLUMN_TYPES.MULTI_SELECT:
+      return values.map((v) => v.option_id).filter(Boolean);
+    case COLUMN_TYPES.CHECKBOX:
+      return values[0].value === 'true';
+    case COLUMN_TYPES.NUMBER:
+      return values[0].value != null ? Number(values[0].value) : null;
+    default:
+      return values[0].value ?? null;
   }
 };
