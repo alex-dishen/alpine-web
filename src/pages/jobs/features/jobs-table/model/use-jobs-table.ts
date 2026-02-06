@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect, useCallback } from 'react';
+import { useRef, useMemo, useState, useEffect, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -54,7 +54,20 @@ export const useJobsTable = () => {
     overscan: 100,
   });
 
-  // Infinite scroll
+  // Horizontal scroll indicators
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateScrollIndicators = useCallback(() => {
+    const el = tableContainerRef.current;
+
+    if (!el) return;
+
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }, []);
+
+  // Infinite scroll + horizontal scroll indicators
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
       const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
@@ -63,8 +76,10 @@ export const useJobsTable = () => {
       if (distanceFromBottom < 700 && hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
       }
+
+      updateScrollIndicators();
     },
-    [hasNextPage, isFetchingNextPage, fetchNextPage]
+    [hasNextPage, isFetchingNextPage, fetchNextPage, updateScrollIndicators]
   );
 
   // Column header callbacks for dropdown menu
@@ -192,15 +207,33 @@ export const useJobsTable = () => {
     onColumnSizingChange: setColumnSizing,
   });
 
+  const centerTotalSize = table.getCenterTotalSize();
+
+  // Recheck scroll indicators on mount, column resize, and container resize
+  useEffect(() => {
+    updateScrollIndicators();
+
+    const el = tableContainerRef.current;
+
+    if (!el) return;
+
+    const observer = new ResizeObserver(updateScrollIndicators);
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, [centerTotalSize, updateScrollIndicators]);
+
   return {
     sensors,
     isLoading,
     columnOrder,
+    canScrollLeft,
+    canScrollRight,
+    centerTotalSize,
     tableContainerRef,
     isFetchingNextPage,
     rows: table.getRowModel().rows,
     totalSize: virtualizer.getTotalSize(),
-    centerTotalSize: table.getCenterTotalSize(),
     headerGroups: table.getHeaderGroups(),
     virtualRows: virtualizer.getVirtualItems(),
     isResizing: !!table.getState().columnSizingInfo.isResizingColumn,

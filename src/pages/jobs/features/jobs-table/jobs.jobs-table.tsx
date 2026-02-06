@@ -1,3 +1,4 @@
+import { cn } from '@/shared/shadcn/utils/utils';
 import { Skeleton } from '@/shared/shadcn/components/skeleton';
 import { useJobsTable } from '@/pages/jobs/features/jobs-table/model/use-jobs-table';
 import { DraggableHeader } from '@/pages/jobs/features/jobs-table/ui/draggable-header';
@@ -22,6 +23,8 @@ export const JobsTable = () => {
     totalSize,
     virtualRows,
     columnOrder,
+    canScrollLeft,
+    canScrollRight,
     centerTotalSize,
     headerGroups,
     tableContainerRef,
@@ -48,44 +51,59 @@ export const JobsTable = () => {
       modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
       onDragEnd={handleDragEnd}
     >
-      <div
-        ref={tableContainerRef}
-        className="relative h-[calc(100vh-280px)] overflow-auto [&_[data-slot=table-container]]:overflow-visible"
-        onScroll={handleScroll}
-      >
-        <Table className="table-fixed" style={{ width: centerTotalSize }}>
-          <TableHeader className="bg-background sticky top-0 z-10">
-            {headerGroups.map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                <SortableContext
-                  items={columnOrder}
-                  strategy={horizontalListSortingStrategy}
-                >
-                  {headerGroup.headers.map((header) => (
-                    <DraggableHeader key={header.id} header={header} />
-                  ))}
-                </SortableContext>
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBodyContent
-            rows={rows}
-            virtualRows={virtualRows}
-            totalSize={totalSize}
-            columnCount={headerGroups[0]?.headers.length || 1}
-            isResizing={isResizing}
-            handleOpenDetail={handleOpenDetail}
-          />
-        </Table>
+      <div className="relative">
+        <div
+          className={cn(
+            'from-background pointer-events-none absolute top-0 left-0 z-20 h-full w-10 bg-gradient-to-r to-transparent transition-opacity duration-200',
+            canScrollLeft ? 'opacity-100' : 'opacity-0'
+          )}
+        />
+        <div
+          className={cn(
+            'from-background pointer-events-none absolute top-0 right-0 z-20 h-full w-10 bg-gradient-to-l to-transparent transition-opacity duration-200',
+            canScrollRight ? 'opacity-100' : 'opacity-0'
+          )}
+        />
 
-        {isFetchingNextPage && (
-          <div className="flex items-center justify-center py-4">
-            <div className="border-primary size-6 animate-spin rounded-full border-2 border-t-transparent" />
-            <span className="text-muted-foreground ml-2 text-sm">
-              Loading more...
-            </span>
-          </div>
-        )}
+        <div
+          ref={tableContainerRef}
+          className="h-[calc(100vh-280px)] overflow-auto [&_[data-slot=table-container]]:overflow-visible"
+          onScroll={handleScroll}
+        >
+          <Table className="table-fixed" style={{ width: centerTotalSize }}>
+            <TableHeader className="bg-background sticky top-0 z-10">
+              {headerGroups.map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  <SortableContext
+                    items={columnOrder}
+                    strategy={horizontalListSortingStrategy}
+                  >
+                    {headerGroup.headers.map((header) => (
+                      <DraggableHeader key={header.id} header={header} />
+                    ))}
+                  </SortableContext>
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBodyContent
+              rows={rows}
+              virtualRows={virtualRows}
+              totalSize={totalSize}
+              columnCount={headerGroups[0]?.headers.length || 1}
+              isResizing={isResizing}
+              handleOpenDetail={handleOpenDetail}
+            />
+          </Table>
+
+          {isFetchingNextPage && (
+            <div className="flex items-center justify-center py-4">
+              <div className="border-primary size-6 animate-spin rounded-full border-2 border-t-transparent" />
+              <span className="text-muted-foreground ml-2 text-sm">
+                Loading more...
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </DndContext>
   );
