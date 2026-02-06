@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState, useEffect, useCallback } from 'react';
+import { useRef, useMemo, useEffect, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -10,7 +10,11 @@ import {
   getDefaultFilterByColumnType,
   isFilterActive,
 } from '@/configs/zustand/jobs-table/jobs-table.helpers';
+import { useModalsStore } from '@/configs/zustand/modals/modals.store';
+import { MODALS } from '@/configs/zustand/modals/modals.constants';
 import { type ColumnType } from '@/configs/api/types/api.enums';
+import { useUpdateColumn } from '@/pages/jobs/model/use-update-column';
+import { useDeleteColumn } from '@/pages/jobs/model/use-delete-column';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -21,6 +25,9 @@ import {
 
 export const useJobsTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
+  const openModal = useModalsStore((state) => state.openModal);
+  const updateColumn = useUpdateColumn();
+  const deleteColumn = useDeleteColumn();
 
   // Get filter actions from store (only actions, not state - to avoid re-renders)
   const setSort = useJobsTableStore((state) => state.setSort);
@@ -46,28 +53,49 @@ export const useJobsTable = () => {
     handleUpdateColumnValue,
   } = useJobsData();
 
-  // Virtualizer
+  // Virtualizer — custom observeElementOffset to skip horizontal-only scroll events
   const virtualizer = useVirtualizer({
     count: jobs.length,
     getScrollElement: () => tableContainerRef.current,
     estimateSize: () => 33,
     overscan: 100,
+    observeElementOffset: (instance, cb) => {
+      const element = instance.scrollElement;
+
+      if (!element) return;
+
+      let prevOffset = element.scrollTop;
+      let scrollEndTimer: ReturnType<typeof setTimeout> | null = null;
+
+      const handler = () => {
+        const offset = element.scrollTop;
+
+        if (offset === prevOffset) return;
+
+        prevOffset = offset;
+
+        if (scrollEndTimer) clearTimeout(scrollEndTimer);
+
+        cb(offset, true);
+
+        scrollEndTimer = setTimeout(() => {
+          cb(offset, false);
+        }, instance.options.isScrollingResetDelay);
+      };
+
+      cb(element.scrollTop, false);
+
+      element.addEventListener('scroll', handler, { passive: true });
+
+      return () => {
+        element.removeEventListener('scroll', handler);
+
+        if (scrollEndTimer) clearTimeout(scrollEndTimer);
+      };
+    },
   });
 
-  // Horizontal scroll indicators
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const updateScrollIndicators = useCallback(() => {
-    const el = tableContainerRef.current;
-
-    if (!el) return;
-
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-  }, []);
-
-  // Infinite scroll + horizontal scroll indicators
+  // Infinite scroll
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
       const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
@@ -76,10 +104,8 @@ export const useJobsTable = () => {
       if (distanceFromBottom < 700 && hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
       }
-
-      updateScrollIndicators();
     },
-    [hasNextPage, isFetchingNextPage, fetchNextPage, updateScrollIndicators]
+    [hasNextPage, isFetchingNextPage, fetchNextPage]
   );
 
   // Column header callbacks for dropdown menu
@@ -108,11 +134,27 @@ export const useJobsTable = () => {
         });
         openFilter(columnId);
       },
-      onRenameColumn: (_columnId, _newName) => {
-        // TODO: Implement column rename API call
+      onRenameColumn: (columnId, newName) => {
+        const trimmed = newName.trim();
+
+        if (!trimmed) return;
+
+        updateColumn.mutate({
+          params: { path: { id: columnId } },
+          body: { name: trimmed },
+        });
       },
-      onDeleteColumn: (_columnId) => {
-        // TODO: Implement delete column confirmation
+      onDeleteColumn: (columnId) => {
+        openModal(MODALS.Confirm, {
+          title: 'Delete Column',
+          description:
+            'Are you sure you want to delete this column? This action cannot be undone.',
+          confirmLabel: 'Delete',
+          variant: 'destructive',
+          onConfirm: () => {
+            deleteColumn.mutate({ params: { path: { id: columnId } } });
+          },
+        });
       },
       getHasActiveSort: (columnId) => {
         // Read current state without subscribing to avoid re-renders
@@ -129,7 +171,15 @@ export const useJobsTable = () => {
         return isFilterActive(filter);
       },
     }),
-    [columns, setSort, addFilter, openFilter]
+    [
+      columns,
+      deleteColumn,
+      updateColumn,
+      setSort,
+      addFilter,
+      openFilter,
+      openModal,
+    ]
   );
 
   // Table columns
@@ -209,27 +259,11 @@ export const useJobsTable = () => {
 
   const centerTotalSize = table.getCenterTotalSize();
 
-  // Recheck scroll indicators on mount, column resize, and container resize
-  useEffect(() => {
-    updateScrollIndicators();
-
-    const el = tableContainerRef.current;
-
-    if (!el) return;
-
-    const observer = new ResizeObserver(updateScrollIndicators);
-    observer.observe(el);
-
-    return () => observer.disconnect();
-  }, [centerTotalSize, updateScrollIndicators]);
-
   return {
     sensors,
     isLoading,
     columnOrder,
     hasNextPage,
-    canScrollLeft,
-    canScrollRight,
     centerTotalSize,
     tableContainerRef,
     rows: table.getRowModel().rows,

@@ -10,9 +10,8 @@ export const SYSTEM_COLUMN_NAMES = [
   'Position',
   'Stage',
   'Applied',
-  'URL',
-  'Salary',
-  'Location',
+  'Salary Min',
+  'Salary Max',
 ] as const;
 
 // Column type labels for UI

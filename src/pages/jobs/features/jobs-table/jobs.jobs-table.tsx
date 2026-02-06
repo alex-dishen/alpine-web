@@ -1,8 +1,8 @@
-import { cn } from '@/shared/shadcn/utils/utils';
 import { Skeleton } from '@/shared/shadcn/components/skeleton';
 import { useJobsTable } from '@/pages/jobs/features/jobs-table/model/use-jobs-table';
 import { DraggableHeader } from '@/pages/jobs/features/jobs-table/ui/draggable-header';
 import { TableBodyContent } from '@/pages/jobs/features/jobs-table/ui/table-body-content';
+import { ScrollShadows } from '@/pages/jobs/features/jobs-table/ui/scroll-shadows';
 import { Table, TableHeader, TableRow } from '@/shared/shadcn/components/table';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
@@ -25,8 +25,6 @@ export const JobsTable = () => {
     columnOrder,
     hasNextPage,
     headerGroups,
-    canScrollLeft,
-    canScrollRight,
     centerTotalSize,
     tableContainerRef,
     handleScroll,
@@ -52,18 +50,7 @@ export const JobsTable = () => {
       onDragEnd={handleDragEnd}
     >
       <div className="relative">
-        <div
-          className={cn(
-            'from-background pointer-events-none absolute top-0 left-0 z-20 h-full w-10 bg-gradient-to-r to-transparent transition-opacity duration-200',
-            canScrollLeft ? 'opacity-100' : 'opacity-0'
-          )}
-        />
-        <div
-          className={cn(
-            'from-background pointer-events-none absolute top-0 right-0 z-20 h-full w-10 bg-gradient-to-l to-transparent transition-opacity duration-200',
-            canScrollRight ? 'opacity-100' : 'opacity-0'
-          )}
-        />
+        <ScrollShadows containerRef={tableContainerRef} />
 
         <div
           ref={tableContainerRef}

@@ -1,13 +1,11 @@
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/shared/shadcn/components/alert-dialog';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/shared/shadcn/components/dialog';
+import { Button } from '@/shared/shadcn/components/button';
 import type { ConfirmModalProps } from '@/configs/zustand/modals/modals.props';
 
 export const ConfirmModal = ({
@@ -26,26 +24,33 @@ export const ConfirmModal = ({
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleConfirm}
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent showCloseButton={false} className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            className="cursor-pointer"
+            onClick={() => onOpenChange(false)}
+          >
+            {cancelLabel}
+          </Button>
+          <Button
+            variant={variant === 'destructive' ? 'outline' : 'default'}
             className={
               variant === 'destructive'
-                ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
-                : ''
+                ? 'text-destructive hover:!bg-destructive/20 hover:!text-destructive cursor-pointer'
+                : 'cursor-pointer'
             }
+            onClick={handleConfirm}
           >
             {confirmLabel}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
