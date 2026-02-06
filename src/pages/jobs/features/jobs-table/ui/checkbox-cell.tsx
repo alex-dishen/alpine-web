@@ -13,10 +13,17 @@ export const CheckboxCell = ({
   className,
 }: CheckboxCellProps) => {
   return (
-    <div className={cn('flex items-center justify-center', className)}>
+    <div
+      className={cn(
+        'hover:bg-muted/50 flex min-h-[36px] w-full cursor-pointer items-center justify-center',
+        className
+      )}
+      onClick={() => onChange(!value)}
+    >
       <Checkbox
         checked={value}
         onCheckedChange={(checked) => onChange(checked === true)}
+        className="pointer-events-none"
       />
     </div>
   );

@@ -1,60 +1,74 @@
-import { useSortable } from '@dnd-kit/sortable';
-import { flexRender, type Header } from '@tanstack/react-table';
+import type { Header } from '@tanstack/react-table';
 import { TableHead } from '@/shared/shadcn/components/table';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from '@/shared/shadcn/components/dropdown-menu';
 import { cn } from '@/shared/shadcn/utils/utils';
 import type { JobApplicationWithStage } from '@/pages/jobs/registry/jobs.types';
+import { useDraggableHeader } from '@/pages/jobs/features/jobs-table/model/use-draggable-header';
+import { ColumnHeaderDropdownContent } from './column-header-dropdown-content';
+import { ColumnHeaderDisplay } from './column-header-display';
 
 type DraggableHeaderProps = {
   header: Header<JobApplicationWithStage, unknown>;
 };
 
 export const DraggableHeader = ({ header }: DraggableHeaderProps) => {
-  const isActionsColumn = header.id === 'actions';
-
   const {
+    icon,
+    style,
+    column,
     listeners,
-    transform,
     attributes,
-    transition,
     isDragging,
+    dropdownOpen,
+    hasActiveSort,
+    hasActiveFilter,
     setNodeRef,
-  } = useSortable({
-    id: header.id,
-    disabled: isActionsColumn,
-  });
-
-  const style = {
-    width: header.getSize(),
-    transform: transform ? `translate3d(${transform.x}px, 0, 0)` : undefined,
-    transition,
-    opacity: isDragging ? 0.8 : 1,
-  };
-
-  // Actions column - not draggable
-  if (isActionsColumn) {
-    return (
-      <TableHead style={{ width: header.getSize() }}>
-        {header.isPlaceholder
-          ? null
-          : flexRender(header.column.columnDef.header, header.getContext())}
-      </TableHead>
-    );
-  }
+    handleSort,
+    handleFilter,
+    handleRename,
+    handleDelete,
+    handlePointerUp,
+    handleOpenChange,
+    handlePointerDown,
+  } = useDraggableHeader(header);
 
   return (
-    <TableHead
-      ref={setNodeRef}
-      style={style}
-      className={cn(
-        'hover:bg-muted/50 cursor-grab transition-colors active:cursor-grabbing',
-        isDragging && 'bg-muted/50 z-10'
-      )}
-      {...attributes}
-      {...listeners}
-    >
-      {header.isPlaceholder
-        ? null
-        : flexRender(header.column.columnDef.header, header.getContext())}
-    </TableHead>
+    <DropdownMenu open={dropdownOpen} onOpenChange={handleOpenChange}>
+      <DropdownMenuTrigger asChild>
+        <TableHead
+          ref={setNodeRef}
+          style={style}
+          className={cn(
+            'hover:bg-muted/50 cursor-pointer rounded-t-sm transition-colors outline-none',
+            isDragging && 'bg-muted/50 z-10 cursor-grabbing'
+          )}
+          onPointerDown={(e) => {
+            handlePointerDown();
+            listeners?.onPointerDown?.(e);
+          }}
+          onPointerUp={handlePointerUp}
+          {...attributes}
+        >
+          {header.isPlaceholder ? null : (
+            <ColumnHeaderDisplay
+              icon={icon}
+              name={column.name}
+              hasFilterIndicator={hasActiveFilter}
+              hasSortIndicator={hasActiveSort}
+            />
+          )}
+        </TableHead>
+      </DropdownMenuTrigger>
+      <ColumnHeaderDropdownContent
+        column={column}
+        onSort={handleSort}
+        onFilter={handleFilter}
+        onRename={handleRename}
+        onDelete={handleDelete}
+      />
+    </DropdownMenu>
   );
 };

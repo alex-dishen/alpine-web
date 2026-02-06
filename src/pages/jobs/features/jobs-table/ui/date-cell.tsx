@@ -43,7 +43,7 @@ export const DateCell = ({
         <Button
           variant="ghost"
           className={cn(
-            'h-8 w-full cursor-pointer justify-start px-2 font-normal',
+            'min-h-[32px] w-full cursor-pointer justify-start rounded-none px-2 font-normal',
             !value && 'text-muted-foreground',
             className
           )}

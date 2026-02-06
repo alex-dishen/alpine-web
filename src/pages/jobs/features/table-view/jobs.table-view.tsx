@@ -1,19 +1,13 @@
-import { JobsFilterBar } from '@/pages/jobs/features/filter-bar/jobs.filter-bar';
 import { JobsTable } from '@/pages/jobs/features/jobs-table/jobs.jobs-table';
-import type { JobFilters } from '@/pages/jobs/registry/jobs.types';
+import { TableToolbar } from '@/pages/jobs/features/table-toolbar/table-toolbar';
 
-type JobsTableViewProps = {
-  filters: JobFilters;
-  setFilters: React.Dispatch<React.SetStateAction<JobFilters>>;
-};
-
-export const JobsTableView = ({ filters, setFilters }: JobsTableViewProps) => {
+export const JobsTableView = () => {
   return (
     <div className="space-y-4">
-      <JobsFilterBar filters={filters} setFilters={setFilters} />
+      <TableToolbar />
 
       <div className="rounded-lg">
-        <JobsTable filters={filters} />
+        <JobsTable />
       </div>
     </div>
   );

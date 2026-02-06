@@ -4,7 +4,13 @@ import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import { arrayMove } from '@dnd-kit/sortable';
 import { createJobColumns } from '@/pages/jobs/features/jobs-table/registry/jobs-table-columns.factory';
 import { useJobsData } from '@/pages/jobs/features/jobs-table/model/use-jobs-data';
-import type { JobFilters } from '@/pages/jobs/registry/jobs.types';
+import type { ColumnHeaderCallbacks } from '@/pages/jobs/features/jobs-table/registry/jobs-table-columns.factory.types';
+import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import {
+  getDefaultFilterByColumnType,
+  isFilterActive,
+} from '@/configs/zustand/jobs-filters/jobs-filters.helpers';
+import { type ColumnType } from '@/configs/api/types/api.enums';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -13,14 +19,15 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/core';
 
-type UseJobsTableProps = {
-  filters: JobFilters;
-};
-
-export const useJobsTable = ({ filters }: UseJobsTableProps) => {
+export const useJobsTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
-  // Get business data
+  // Get filter actions from store (only actions, not state - to avoid re-renders)
+  const setSort = useJobsFiltersStore((state) => state.setSort);
+  const addFilter = useJobsFiltersStore((state) => state.addFilter);
+  const openFilter = useJobsFiltersStore((s) => s.openFilter);
+
+  // Get business data - useJobsData -> useJobsList subscribes to filters internally
   const {
     jobs,
     columns,
@@ -31,8 +38,7 @@ export const useJobsTable = ({ filters }: UseJobsTableProps) => {
     handleOpenDetail,
     handleUpdateJob,
     handleUpdateColumnValue,
-    handleDeleteJob,
-  } = useJobsData({ filters });
+  } = useJobsData();
 
   // Virtualizer
   const virtualizer = useVirtualizer({
@@ -55,6 +61,56 @@ export const useJobsTable = ({ filters }: UseJobsTableProps) => {
     [hasNextPage, isFetchingNextPage, fetchNextPage]
   );
 
+  // Column header callbacks for dropdown menu
+  // Uses store.getState() for getHasActiveSort/getHasActiveFilter to read current state without subscribing
+  const columnHeaderCallbacks: ColumnHeaderCallbacks = useMemo(
+    () => ({
+      onSort: (columnId, columnName, direction) =>
+        setSort({ columnId, columnName, direction }),
+      onFilter: (columnId) => {
+        const column = columns.find((c) => c.id === columnId);
+        const columnName = column?.name ?? columnId;
+        const columnType = column?.column_type as ColumnType | undefined;
+        // Use field_key for core columns, id for custom columns
+        const apiColumnId =
+          column?.is_core && column?.field_key ? column.field_key : columnId;
+
+        const defaults = getDefaultFilterByColumnType(columnType);
+
+        addFilter({
+          columnId,
+          columnName,
+          apiColumnId,
+          columnType,
+          operator: defaults.operator,
+          value: defaults.value,
+        });
+        openFilter(columnId);
+      },
+      onRenameColumn: (_columnId, _newName) => {
+        // TODO: Implement column rename API call
+      },
+      onDeleteColumn: (_columnId) => {
+        // TODO: Implement delete column confirmation
+      },
+      getHasActiveSort: (columnId) => {
+        // Read current state without subscribing to avoid re-renders
+        const { sort } = useJobsFiltersStore.getState();
+
+        return sort?.columnId === columnId;
+      },
+      getHasActiveFilter: (columnId) => {
+        const { filters } = useJobsFiltersStore.getState();
+        const filter = filters.find((f) => f.columnId === columnId);
+
+        if (!filter) return false;
+
+        return isFilterActive(filter);
+      },
+    }),
+    [columns, setSort, addFilter, openFilter]
+  );
+
   // Table columns
   const tableColumns = useMemo(
     () =>
@@ -62,23 +118,17 @@ export const useJobsTable = ({ filters }: UseJobsTableProps) => {
         columns,
         onUpdateJob: handleUpdateJob,
         onUpdateColumnValue: handleUpdateColumnValue,
-        onDeleteJob: handleDeleteJob,
-        onOpenDetail: handleOpenDetail,
+        columnHeaderCallbacks,
       }),
-    [
-      columns,
-      handleUpdateJob,
-      handleUpdateColumnValue,
-      handleDeleteJob,
-      handleOpenDetail,
-    ]
+    [columns, handleUpdateJob, handleUpdateColumnValue, columnHeaderCallbacks]
   );
 
-  // Column ordering
+  // Column ordering - low distance threshold so drag activates quickly
+  // Click vs drag is determined by whether movement happened during drag
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 1,
       },
     }),
     useSensor(KeyboardSensor)

@@ -9,11 +9,11 @@ import {
   SelectValue,
 } from '@/shared/shadcn/components/select';
 import { COLUMN_TYPE_LABELS } from '@/pages/jobs/registry/jobs.constants';
-import type { JobColumnType } from '@/pages/jobs/registry/jobs.types';
+import type { ColumnType } from '@/configs/api/types/api.enums';
 
 type AddColumnFormProps = {
   name: string;
-  columnType: JobColumnType;
+  columnType: ColumnType;
   isCreating: boolean;
   onNameChange: (value: string) => void;
   onTypeChange: (value: string) => void;
@@ -48,13 +48,13 @@ export const AddColumnForm = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {(
-              Object.entries(COLUMN_TYPE_LABELS) as [JobColumnType, string][]
-            ).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
+            {(Object.entries(COLUMN_TYPE_LABELS) as [ColumnType, string][]).map(
+              ([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
       </div>

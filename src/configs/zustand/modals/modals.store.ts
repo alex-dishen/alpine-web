@@ -15,9 +15,18 @@ type OpenModal<K extends ModalKey = ModalKey> = {
   props: ModalExtraProps<K>;
 };
 
+// Check if type is an empty object
+type IsEmptyObject<T> = keyof T extends never ? true : false;
+
+// Make props optional if ModalExtraProps is empty
+type OpenModalArgs<K extends ModalKey> =
+  IsEmptyObject<ModalExtraProps<K>> extends true
+    ? [id: K, props?: ModalExtraProps<K>]
+    : [id: K, props: ModalExtraProps<K>];
+
 type ModalsState = {
   modals: OpenModal[];
-  openModal: <K extends ModalKey>(id: K, props: ModalExtraProps<K>) => void;
+  openModal: <K extends ModalKey>(...args: OpenModalArgs<K>) => void;
   closeModal: (id: ModalKey) => void;
   closeAllModals: () => void;
 };
@@ -25,7 +34,7 @@ type ModalsState = {
 export const useModalsStore = create<ModalsState>((set) => ({
   modals: [],
 
-  openModal: (id, props) =>
+  openModal: (id, props = {} as never) =>
     set((state) => ({
       modals: [...state.modals, { id, props }],
     })),

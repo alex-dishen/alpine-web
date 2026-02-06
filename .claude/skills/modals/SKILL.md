@@ -164,11 +164,12 @@ const Component = () => {
 
 ## Common Mistakes
 
-| Wrong                            | Correct                             |
-| -------------------------------- | ----------------------------------- |
-| Define props in modal file       | Define in `modals.props.ts`         |
-| Import MODALS in modal component | Only import props type              |
-| Logic inside modal component     | Move to `use-[modal]-modal.ts` hook |
-| Multiple hooks in one file       | One hook per file                   |
-| `open?: boolean` with default    | `open: boolean` (required)          |
-| `openModal(MODALS.X)`            | `openModal(MODALS.X, {})`           |
+| Wrong                            | Correct                                                   |
+| -------------------------------- | --------------------------------------------------------- |
+| Define props in modal file       | Define in `modals.props.ts`                               |
+| Import MODALS in modal component | Only import props type                                    |
+| Logic inside modal component     | Move to `use-[modal]-modal.ts` hook                       |
+| Multiple components in one file  | One component per file — split into separate `.tsx` files |
+| Multiple hooks in one file       | One hook per file                                         |
+| `open?: boolean` with default    | `open: boolean` (required)                                |
+| `openModal(MODALS.X)`            | `openModal(MODALS.X, {})`                                 |

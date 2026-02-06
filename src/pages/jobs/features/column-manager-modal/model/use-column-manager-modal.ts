@@ -5,11 +5,11 @@ import { $api } from '@/configs/api/client';
 import { COLUMNS_QUERY_KEY, JOBS_QUERY_KEY } from '@/configs/api/query-keys';
 import { useModalsStore } from '@/configs/zustand/modals/modals.store';
 import { MODALS } from '@/configs/zustand/modals/modals.constants';
-import type { JobColumnType } from '@/pages/jobs/registry/jobs.types';
+import { COLUMN_TYPES, type ColumnType } from '@/configs/api/types/api.enums';
 
 type NewColumnData = {
   name: string;
-  column_type: JobColumnType;
+  column_type: ColumnType;
 };
 
 export const useColumnManagerModal = () => {
@@ -33,7 +33,7 @@ export const useColumnManagerModal = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newColumn, setNewColumn] = useState<NewColumnData>({
     name: '',
-    column_type: 'text',
+    column_type: COLUMN_TYPES.TEXT,
   });
 
   const handleToggleAddForm = () => {
@@ -61,7 +61,7 @@ export const useColumnManagerModal = () => {
       },
       {
         onSuccess: () => {
-          setNewColumn({ name: '', column_type: 'text' });
+          setNewColumn({ name: '', column_type: COLUMN_TYPES.TEXT });
           setShowAddForm(false);
         },
       }

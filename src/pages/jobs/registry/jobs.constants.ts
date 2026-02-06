@@ -1,4 +1,4 @@
-import type { JobColumnType } from './jobs.types';
+import { COLUMN_TYPES, type ColumnType } from '@/configs/api/types/api.enums';
 
 // Note: Stages are now fully managed by the API, no frontend defaults needed
 
@@ -15,15 +15,15 @@ export const SYSTEM_COLUMN_NAMES = [
   'Location',
 ] as const;
 
-// Column type labels for UI (using lowercase snake_case from API)
-export const COLUMN_TYPE_LABELS: Record<JobColumnType, string> = {
-  text: 'Text',
-  number: 'Number',
-  date: 'Date',
-  url: 'URL',
-  checkbox: 'Checkbox',
-  select: 'Single Select',
-  multi_select: 'Multi Select',
+// Column type labels for UI
+export const COLUMN_TYPE_LABELS: Record<ColumnType, string> = {
+  [COLUMN_TYPES.TEXT]: 'Text',
+  [COLUMN_TYPES.NUMBER]: 'Number',
+  [COLUMN_TYPES.DATE]: 'Date',
+  [COLUMN_TYPES.URL]: 'URL',
+  [COLUMN_TYPES.CHECKBOX]: 'Checkbox',
+  [COLUMN_TYPES.SELECT]: 'Single Select',
+  [COLUMN_TYPES.MULTI_SELECT]: 'Multi Select',
 };
 
 // Stage color presets

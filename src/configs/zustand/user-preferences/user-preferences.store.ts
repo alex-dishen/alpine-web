@@ -3,21 +3,25 @@ import { persist } from 'zustand/middleware';
 
 export type Theme = 'light' | 'dark' | 'system';
 
-export type ThemeState = {
+type UserPreferencesState = {
   theme: Theme;
+  sidebarOpen: boolean;
 
   setTheme: (theme: Theme) => void;
+  setSidebarOpen: (open: boolean) => void;
 };
 
-export const useThemeStore = create<ThemeState>()(
+export const useUserPreferencesStore = create<UserPreferencesState>()(
   persist(
     (set) => ({
       theme: 'system',
+      sidebarOpen: true,
 
       setTheme: (theme) => set({ theme }),
+      setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
     }),
     {
-      name: 'alpine-theme',
+      name: 'alpine-user-preferences',
     }
   )
 );

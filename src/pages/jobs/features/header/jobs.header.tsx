@@ -2,18 +2,17 @@ import { Plus, Search, Settings2, Columns3 } from 'lucide-react';
 import { Button } from '@/shared/shadcn/components/button';
 import { Input } from '@/shared/shadcn/components/input';
 import { Badge } from '@/shared/shadcn/components/badge';
-import { $api } from '@/configs/api/client';
-import { useModalsStore } from '@/configs/zustand/modals/modals.store';
-import { MODALS } from '@/configs/zustand/modals/modals.constants';
+import { useJobsHeader } from '@/pages/jobs/features/header/model/use-jobs-header';
 
-type JobsHeaderProps = {
-  search: string;
-  onSearchChange: (search: string) => void;
-};
-
-export const JobsHeader = ({ search, onSearchChange }: JobsHeaderProps) => {
-  const openModal = useModalsStore((state) => state.openModal);
-  const { data: countData } = $api.useQuery('get', '/api/jobs/count');
+export const JobsHeader = () => {
+  const {
+    count,
+    search,
+    handleSearchChange,
+    handleOpenColumnManager,
+    handleOpenStageManager,
+    handleOpenAddJob,
+  } = useJobsHeader();
 
   return (
     <div className="mb-6 space-y-4">
@@ -21,9 +20,7 @@ export const JobsHeader = ({ search, onSearchChange }: JobsHeaderProps) => {
         <div>
           <h1 className="flex items-center gap-2 text-2xl font-semibold">
             Job Tracker
-            {countData?.count !== undefined && (
-              <Badge variant="secondary">{countData.count}</Badge>
-            )}
+            {count !== undefined && <Badge variant="secondary">{count}</Badge>}
           </h1>
           <p className="text-muted-foreground text-sm">
             Track and manage your job applications
@@ -34,7 +31,8 @@ export const JobsHeader = ({ search, onSearchChange }: JobsHeaderProps) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => openModal(MODALS.JobsColumnManager, {})}
+            className="cursor-pointer"
+            onClick={handleOpenColumnManager}
           >
             <Columns3 className="mr-2 size-4" />
             Columns
@@ -42,12 +40,17 @@ export const JobsHeader = ({ search, onSearchChange }: JobsHeaderProps) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => openModal(MODALS.JobsStageManager, {})}
+            className="cursor-pointer"
+            onClick={handleOpenStageManager}
           >
             <Settings2 className="mr-2 size-4" />
             Stages
           </Button>
-          <Button size="sm" onClick={() => openModal(MODALS.JobsAdd, {})}>
+          <Button
+            size="sm"
+            className="cursor-pointer"
+            onClick={handleOpenAddJob}
+          >
             <Plus className="mr-2 size-4" />
             Add Job
           </Button>
@@ -58,9 +61,9 @@ export const JobsHeader = ({ search, onSearchChange }: JobsHeaderProps) => {
         <div className="relative flex-1">
           <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
-            placeholder="Search jobs by company, position, or location..."
+            placeholder="Search jobs by company or position..."
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-9"
           />
         </div>

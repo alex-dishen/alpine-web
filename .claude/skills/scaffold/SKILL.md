@@ -36,10 +36,11 @@ Each feature follows this pattern:
 
 **Critical Rules:**
 
+- **One component per file** — every component gets its own `.tsx` file, no exceptions
+- **No complex logic in components** — if a component has state, effects, or callbacks beyond simple event handlers, extract into a hook in `model/`. Components should only call hooks and render JSX.
 - `model/` and `ui/` folders are FLAT - no nested subfolders
 - Main component file: `[domain].[feature-name].tsx` (e.g., `jobs.add-modal.tsx`)
 - One hook per file in `model/`
-- One component per file in `ui/`
 
 ## When to Use ui/ Folder
 

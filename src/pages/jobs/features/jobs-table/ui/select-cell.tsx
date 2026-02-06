@@ -54,7 +54,7 @@ export const SelectCell = ({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'h-8 w-full cursor-pointer justify-between px-2 font-normal',
+            'min-h-[32px] w-full cursor-pointer justify-between rounded-none px-2 font-normal',
             !value && 'text-muted-foreground',
             className
           )}

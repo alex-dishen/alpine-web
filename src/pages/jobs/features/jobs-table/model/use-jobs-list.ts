@@ -1,21 +1,40 @@
 import { useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { fetchClient } from '@/configs/api/client';
-import { getJobsQueryKey } from '@/configs/api/query-keys';
-import type { JobFilters } from '@/pages/jobs/registry/jobs.types';
+import { fetchClient, $api } from '@/configs/api/client';
+import { getJobsListQueryKey } from '@/configs/api/query-keys';
+import { useJobsFiltersStore } from '@/configs/zustand/jobs-filters/jobs-filters.store';
+import { useDebouncedFilters } from '@/pages/jobs/model/use-debounced-filters';
+import { mapFiltersToApi } from '@/pages/jobs/model/map-filters-to-api';
+import { mapSortToApi } from '@/pages/jobs/model/map-sort-to-api';
 
-export const useJobsList = (filters: JobFilters = {}) => {
+export const useJobsList = () => {
+  const { debouncedSearch, debouncedFilters } = useDebouncedFilters();
+  const sort = useJobsFiltersStore((state) => state.sort);
+
+  const { data: columns = [] } = $api.useQuery('get', '/api/jobs/columns');
+
+  const apiSort = useMemo(() => mapSortToApi(sort, columns), [sort, columns]);
+
+  const apiFilters = useMemo(
+    () => mapFiltersToApi(debouncedFilters),
+    [debouncedFilters]
+  );
+
+  // Use JSON strings for stable query key comparison
+  const sortKey = JSON.stringify(sort);
+  const filtersKey = JSON.stringify(debouncedFilters);
+
   const query = useInfiniteQuery({
-    queryKey: getJobsQueryKey(filters),
+    queryKey: getJobsListQueryKey(debouncedSearch, sortKey, filtersKey),
     queryFn: async ({ pageParam }) => {
       const { data } = await fetchClient.POST('/api/jobs/list', {
         body: {
           filters: {
-            search: filters.search || undefined,
-            stage_id: filters.stage_id || undefined,
-            category: filters.category || undefined,
-            is_archived: filters.is_archived,
+            search: debouncedSearch || undefined,
+            is_archived: false,
+            column_filters: apiFilters.length > 0 ? apiFilters : undefined,
           },
+          sort: apiSort,
           pagination: {
             take: 50,
             cursor: pageParam ?? null,
@@ -47,5 +66,6 @@ export const useJobsList = (filters: JobFilters = {}) => {
   return {
     ...query,
     jobs,
+    columns,
   };
 };

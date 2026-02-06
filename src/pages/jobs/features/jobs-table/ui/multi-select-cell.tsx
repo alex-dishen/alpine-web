@@ -62,7 +62,7 @@ export const MultiSelectCell = ({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'h-auto min-h-8 w-full cursor-pointer justify-between px-2 font-normal',
+            'h-auto min-h-[32px] w-full cursor-pointer justify-between rounded-none px-2 font-normal',
             !values.length && 'text-muted-foreground',
             className
           )}

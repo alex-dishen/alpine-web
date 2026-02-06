@@ -7,19 +7,19 @@ import { useQuickUpdateJob } from '@/pages/jobs/features/jobs-table/model/use-qu
 import { useUpsertColumnValue } from '@/pages/jobs/features/jobs-table/model/use-job-column-values';
 import { useModalsStore } from '@/configs/zustand/modals/modals.store';
 import { MODALS } from '@/configs/zustand/modals/modals.constants';
-import type { JobFilters } from '@/pages/jobs/registry/jobs.types';
 
-type UseJobsDataProps = {
-  filters: JobFilters;
-};
-
-export const useJobsData = ({ filters }: UseJobsDataProps) => {
+export const useJobsData = () => {
   const queryClient = useQueryClient();
   const openModal = useModalsStore((state) => state.openModal);
 
-  const { data: columns = [] } = $api.useQuery('get', '/api/jobs/columns');
-  const { jobs, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useJobsList(filters);
+  const {
+    jobs,
+    columns,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useJobsList();
 
   const updateJob = useQuickUpdateJob();
   const upsertColumnValue = useUpsertColumnValue();

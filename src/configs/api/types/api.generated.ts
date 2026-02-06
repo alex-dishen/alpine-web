@@ -114,27 +114,9 @@ export interface paths {
             cookie?: never;
         };
         /** Get current user */
-        get: operations["UsersController_getCurrentUser"];
+        get: operations["UserController_getCurrentUser"];
         /** Update current user */
-        put: operations["UsersController_updateCurrentUser"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/current/preferences": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get user preferences */
-        get: operations["PreferencesController_getPreferences"];
-        /** Update user preferences */
-        put: operations["PreferencesController_updatePreferences"];
+        put: operations["UserController_updateCurrentUser"];
         post?: never;
         delete?: never;
         options?: never;
@@ -377,10 +359,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get total count of job applications with filters */
-        get: operations["ApplicationsController_getJobsCount"];
+        get?: never;
         put?: never;
-        post?: never;
+        /** Get total count of job applications with filters */
+        post: operations["ApplicationsController_getJobsCount"];
         delete?: never;
         options?: never;
         head?: never;
@@ -464,12 +446,6 @@ export interface components {
             password: string;
             confirmation_password: string;
             avatar_id?: string;
-        };
-        UserPreferencesDto: {
-            preferences: Record<string, never>;
-        };
-        UpdatePreferencesDto: {
-            preferences: Record<string, never>;
         };
         JobStageWithCountResponseDto: {
             /** Format: uuid */
@@ -682,26 +658,33 @@ export interface components {
             updated_at?: string | null;
             stage: components["schemas"]["JobStageResponseDto"];
         };
-        JobFiltersBaseDto: {
-            search?: string;
-            /** Format: uuid */
-            stage_id?: string;
+        ColumnFilterDto: {
+            column_id: string;
             /** @enum {string} */
-            category?: "initial" | "interview" | "positive" | "negative";
+            operator: "contains" | "not_contains" | "equals" | "not_equals" | "starts_with" | "ends_with" | "is_empty" | "is_not_empty" | "gt" | "lt" | "gte" | "lte" | "between" | "is_true" | "is_false" | "is_any_of" | "is_none_of";
+            value?: Record<string, never>;
+            /** @enum {string} */
+            column_type?: "text" | "number" | "date" | "url" | "checkbox" | "select" | "multi_select";
+        };
+        JobFiltersDto: {
+            search?: string;
             is_archived?: boolean;
+            column_filters?: components["schemas"]["ColumnFilterDto"][];
         };
         JobSortDto: {
             /** @enum {string} */
-            sort_by: "stage" | "category" | "is_archived";
+            sort_by: "stage" | "category" | "is_archived" | "company_name" | "job_title" | "applied_at" | "salary_min" | "salary_max" | "created_at" | "custom_column";
             /** @enum {string} */
             order: "asc" | "desc";
+            /** Format: uuid */
+            column_id?: string;
         };
         CursorPaginationRequestDto: {
             take: number;
             cursor: string | null;
         };
-        JobFiltersDto: {
-            filters?: components["schemas"]["JobFiltersBaseDto"];
+        JobListRequestDto: {
+            filters?: components["schemas"]["JobFiltersDto"];
             sort?: components["schemas"]["JobSortDto"];
             pagination: components["schemas"]["CursorPaginationRequestDto"];
         };
@@ -908,7 +891,7 @@ export interface operations {
             };
         };
     };
-    UsersController_getCurrentUser: {
+    UserController_getCurrentUser: {
         parameters: {
             query?: never;
             header?: never;
@@ -927,7 +910,7 @@ export interface operations {
             };
         };
     };
-    UsersController_updateCurrentUser: {
+    UserController_updateCurrentUser: {
         parameters: {
             query?: never;
             header?: never;
@@ -937,48 +920,6 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["UpdateUserDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageDto"];
-                };
-            };
-        };
-    };
-    PreferencesController_getPreferences: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserPreferencesDto"];
-                };
-            };
-        };
-    };
-    PreferencesController_updatePreferences: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdatePreferencesDto"];
             };
         };
         responses: {
@@ -1436,7 +1377,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["JobFiltersDto"];
+                "application/json": components["schemas"]["JobListRequestDto"];
             };
         };
         responses: {
@@ -1460,19 +1401,26 @@ export interface operations {
     };
     ApplicationsController_getJobsCount: {
         parameters: {
-            query?: {
-                search?: string;
-                stage_id?: string;
-                category?: "initial" | "interview" | "positive" | "negative";
-                is_archived?: boolean;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JobFiltersDto"];
+            };
+        };
         responses: {
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobCountResponseDto"];
+                };
+            };
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };

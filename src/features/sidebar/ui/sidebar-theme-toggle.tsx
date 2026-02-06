@@ -2,12 +2,15 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@/shared/shadcn/components/toggle-group';
-import { useThemeStore, type Theme } from '@/configs/zustand/theme/theme.store';
 import { themeOptions } from '@/features/sidebar/registry/sidebar.constants';
+import {
+  useUserPreferencesStore,
+  type Theme,
+} from '@/configs/zustand/user-preferences/user-preferences.store';
 
 export const SidebarThemeToggle = () => {
-  const theme = useThemeStore((state) => state.theme);
-  const setTheme = useThemeStore((state) => state.setTheme);
+  const theme = useUserPreferencesStore((state) => state.theme);
+  const setTheme = useUserPreferencesStore((state) => state.setTheme);
 
   return (
     <ToggleGroup

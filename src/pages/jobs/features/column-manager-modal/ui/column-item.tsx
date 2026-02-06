@@ -1,12 +1,12 @@
 import { GripVertical, Trash2 } from 'lucide-react';
 import { Button } from '@/shared/shadcn/components/button';
 import { COLUMN_TYPE_LABELS } from '@/pages/jobs/registry/jobs.constants';
-import type { JobColumnType } from '@/pages/jobs/registry/jobs.types';
+import type { ColumnType } from '@/configs/api/types/api.enums';
 
 type ColumnItemProps = {
   id: string;
   name: string;
-  columnType: JobColumnType;
+  columnType: ColumnType;
   onDelete: (id: string) => void;
 };
 
