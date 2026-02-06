@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState, useEffect, useCallback } from 'react';
+import { useRef, useMemo, useEffect, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -27,9 +27,11 @@ export const useJobsTable = () => {
   const addFilter = useJobsTableStore((state) => state.addFilter);
   const openFilter = useJobsTableStore((s) => s.openFilter);
 
-  // Column sizing (persisted in store)
+  // Column sizing & ordering (persisted in store)
   const columnSizing = useJobsTableStore((state) => state.columnSizing);
   const setColumnSizing = useJobsTableStore((state) => state.setColumnSizing);
+  const columnOrder = useJobsTableStore((state) => state.columnOrder);
+  const setColumnOrder = useJobsTableStore((state) => state.setColumnOrder);
 
   // Get business data - useJobsData -> useJobsList subscribes to filters internally
   const {
@@ -137,8 +139,6 @@ export const useJobsTable = () => {
     }),
     useSensor(KeyboardSensor)
   );
-
-  const [columnOrder, setColumnOrder] = useState<string[]>([]);
 
   const currentColumnIds = useMemo(
     () => tableColumns.map((col) => col.id as string),

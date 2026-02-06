@@ -14,6 +14,7 @@ type JobsTableState = {
   filters: ColumnFilter[];
   sort: Sort | null;
   columnSizing: ColumnSizingState;
+  columnOrder: string[];
 
   // Non-persisted state (filter dropdown)
   openFilterColumnId: string | null;
@@ -34,6 +35,7 @@ type JobsTableState = {
       | ColumnSizingState
       | ((prev: ColumnSizingState) => ColumnSizingState)
   ) => void;
+  setColumnOrder: (updater: string[] | ((prev: string[]) => string[])) => void;
 
   // Non-persisted actions (filter dropdown)
   openFilter: (columnId: string) => void;
@@ -50,6 +52,7 @@ export const useJobsTableStore = create<JobsTableState>()(
       filters: [],
       sort: null,
       columnSizing: {},
+      columnOrder: [],
 
       // Non-persisted state
       openFilterColumnId: null,
@@ -128,6 +131,13 @@ export const useJobsTableStore = create<JobsTableState>()(
         set({ columnSizing: next });
       },
 
+      setColumnOrder: (updater) => {
+        const { columnOrder } = get();
+        const next =
+          typeof updater === 'function' ? updater(columnOrder) : updater;
+        set({ columnOrder: next });
+      },
+
       // Filter dropdown actions (non-persisted)
       openFilter: (columnId) => {
         // Delay to let column header dropdown close first
@@ -148,6 +158,7 @@ export const useJobsTableStore = create<JobsTableState>()(
         filters: state.filters,
         sort: state.sort,
         columnSizing: state.columnSizing,
+        columnOrder: state.columnOrder,
       }),
     }
   )
