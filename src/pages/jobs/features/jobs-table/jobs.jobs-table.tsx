@@ -19,16 +19,16 @@ export const JobsTable = () => {
     rows,
     sensors,
     isLoading,
-    isResizing,
     totalSize,
+    isResizing,
     virtualRows,
     columnOrder,
+    hasNextPage,
+    headerGroups,
     canScrollLeft,
     canScrollRight,
     centerTotalSize,
-    headerGroups,
     tableContainerRef,
-    isFetchingNextPage,
     handleScroll,
     handleDragEnd,
     handleOpenDetail,
@@ -95,7 +95,7 @@ export const JobsTable = () => {
             />
           </Table>
 
-          {isFetchingNextPage && (
+          {hasNextPage && (
             <div className="flex items-center justify-center py-4">
               <div className="border-primary size-6 animate-spin rounded-full border-2 border-t-transparent" />
               <span className="text-muted-foreground ml-2 text-sm">
